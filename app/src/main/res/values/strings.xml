@@ -1,0 +1,43 @@
+<resources>
+    <string name="app_name">Handyman</string>
+    <string name="plumbing">Plumbing</string>
+    <string name="furniture_assembly">Furniture Assembly</string>
+    <string name="ac_repairs">A/C Repairs</string>
+    <string name="electrical">Electrical</string>
+    <string name="carpentry">Carpentry</string>
+    <string name="yard_maintenance">Yard Maintenance</string>
+    <string name="appliance_installation">Appliance Installation</string>
+    <string name="cleaning">Cleaning</string>
+    <string name="house_moving">House Moving</string>
+    <string name="painting">Painting</string>
+    <string name="floor_repairs">Floor Repairs</string>
+    <string name="ceiling_repairs">Ceiling Repairs</string>
+    <string name="locksmith">Locksmith</string>
+    <string name="car_service">Car Service</string>
+    <string name="baby_sitting">Baby Sitting</string>
+    <string name="beauty_service">Beauty Service</string>
+    <string name="add_photo_hint">Photos help our handymen investigate and prepare to help you better!</string>
+    <string name="confirm_request">Confirm Request</string>
+    <string-array name="location_array">
+        <item>Select a location</item>
+        <item>CBD</item>
+        <item>Camberwell</item>
+        <item>Richmond</item>
+        <item>Hawthorn</item>
+        <item>Docklands</item>
+    </string-array>
+    <string-array name="job_statuses_customer">
+        <item>All</item>
+        <item>Not assigned</item>
+        <item>Assigned</item>
+        <item>In-progress</item>
+        <item>Done</item>
+    </string-array>
+    <string-array name="job_statuses_handyman">
+        <item>All</item>
+        <item>Quoted</item>
+        <item>Accepted</item>
+        <item>In-progress</item>
+        <item>Done</item>
+    </string-array>
+</resources>
