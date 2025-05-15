@@ -22,7 +22,7 @@ import com.google.firebase.database.DatabaseError
 class HandymanJobBoardFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: HandymanJobBoardAdapter
-    val handymanID = "handyman8"
+    val handymanID = "handyman7"
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -58,7 +58,7 @@ class HandymanJobBoardFragment : Fragment() {
             },
             onQuoteJob = { job, quoteJobBttn ->
                 val jobQuotesRef = FirebaseDatabase.getInstance()
-                    .getReference("Job")
+                    .getReference("DummyJob")
                     .child(job.jobId)
                     .child("quotedHandymen")
 
@@ -125,7 +125,7 @@ class HandymanJobBoardFragment : Fragment() {
     }
 
     private fun fetchJobsFromDatabase() {
-        val jobRef = FirebaseDatabase.getInstance().getReference("Job")
+        val jobRef = FirebaseDatabase.getInstance().getReference("DummyJob")
         jobRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val availableJobs = snapshot.children.mapNotNull { child ->

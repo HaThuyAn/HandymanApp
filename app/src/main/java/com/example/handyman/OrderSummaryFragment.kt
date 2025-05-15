@@ -86,7 +86,7 @@ class OrderSummaryFragment : Fragment() {
                 val naKey    = dbRef.child(custPath).child("notAssignedJobs").push().key!!
 
                 val updates = mapOf(
-                    "/Job/$jobId"              to job,
+                    "/DummyJob/$jobId"              to job,
                     "$custPath/allJobs/$allKey"        to jobId,
                     "$custPath/notAssignedJobs/$naKey" to jobId
                 )

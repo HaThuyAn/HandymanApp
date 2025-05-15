@@ -85,7 +85,7 @@ class HandymanJobBoardDetailsFragment : Fragment() {
         val btnQuote: Button = view.findViewById(R.id.btnQuoteJob)
 
         btnQuote.setOnClickListener {
-            val databaseRef = FirebaseDatabase.getInstance().getReference("Job").child(jobId)
+            val databaseRef = FirebaseDatabase.getInstance().getReference("DummyJob").child(jobId)
             // Define a dummy quoted handyman ID
             val dummyHandymanId = UUID.randomUUID().toString()
             // Update the "quotedHandymen" field (assuming your Job model includes it)

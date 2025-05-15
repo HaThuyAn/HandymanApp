@@ -86,7 +86,7 @@ class CustomerJobDetailsFragment : Fragment() {
         recyclerView.adapter = adapter
 
         val quotedHandymenRef = FirebaseDatabase.getInstance()
-            .getReference("Job")
+            .getReference("DummyJob")
             .child(jobId)
             .child("quotedHandymen")
 

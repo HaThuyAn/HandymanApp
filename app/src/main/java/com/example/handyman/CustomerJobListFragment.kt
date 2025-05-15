@@ -18,6 +18,8 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 
 class CustomerJobListFragment : Fragment() {
+    private var currentCategoryKey = "allJobs"
+
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: CustomerJobListAdapter
     private val customerId = "customer2"   // your real customer ID here
@@ -144,7 +146,7 @@ class CustomerJobListFragment : Fragment() {
                     .setPositiveButton("OK") { _, _ ->
                         val newStatus = nextStatuses[chosen]
                         val jobRef = FirebaseDatabase.getInstance()
-                            .getReference("Job")
+                            .getReference("DummyJob")
                             .child(job.jobId)
 
                         jobRef.child("jobStatusCustomer")
@@ -164,13 +166,17 @@ class CustomerJobListFragment : Fragment() {
                                                 jobRef.child("jobStatus")
                                                     .setValue(newStatus)
                                                     .addOnSuccessListener {
-                                                        val updatedList = if (newStatus == "In-progress" || newStatus == "Done") {
-                                                            adapter.currentList.filter { it.jobId != job.jobId }
-                                                        } else {
-                                                            // there aren't any other cases, but just in case:
-                                                            adapter.currentList
+//                                                        val updatedList = if (newStatus == "In-progress" || newStatus == "Done") {
+//                                                            adapter.currentList.filter { it.jobId != job.jobId }
+//                                                        } else {
+//                                                            // there aren't any other cases, but just in case:
+//                                                            adapter.currentList
+//                                                        }
+//                                                        adapter.submitList(updatedList)
+                                                        if (currentCategoryKey != "allJobs") {
+                                                            val updatedList = adapter.currentList.filter { it.jobId != job.jobId }
+                                                            adapter.submitList(updatedList)
                                                         }
-                                                        adapter.submitList(updatedList)
                                                     }
 
                                                 val (custFrom, hmFrom, toList) = when (newStatus) {
@@ -196,6 +202,8 @@ class CustomerJobListFragment : Fragment() {
                                                     .getReference("dummyHandymen")
                                                     .child(job.assignedTo)
                                                 moveJobId(hmRef, hmFrom, toList, job.jobId)
+
+                                                fetchJobsForCategory(currentCategoryKey)
                                             }
                                         }
                                         override fun onCancelled(e: DatabaseError) {}
@@ -221,7 +229,7 @@ class CustomerJobListFragment : Fragment() {
                 parent: AdapterView<*>, v: View?, pos: Int, id: Long
             ) {
                 val display = parent.getItemAtPosition(pos) as String
-                val key = when (display) {
+                currentCategoryKey = when (display) {
                     "Assigned"      -> "assignedJobs"
                     "Not assigned"  -> "notAssignedJobs"
                     "All"           -> "allJobs"
@@ -229,7 +237,7 @@ class CustomerJobListFragment : Fragment() {
                     "Done"          -> "completedJobs"
                     else            -> return
                 }
-                fetchJobsForCategory(key)
+                fetchJobsForCategory(currentCategoryKey)
             }
             override fun onNothingSelected(parent: AdapterView<*>) {}
         }
@@ -278,7 +286,7 @@ class CustomerJobListFragment : Fragment() {
 
     private fun fetchJobsByIds(jobIds: List<String>) {
         FirebaseDatabase.getInstance()
-            .getReference("Job")
+            .getReference("DummyJob")
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val jobs = snapshot.children.mapNotNull { jobSnap ->

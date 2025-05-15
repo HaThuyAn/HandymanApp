@@ -75,7 +75,7 @@ class QuotedHandymenAdapter(
 
         holder.assignBttn.setOnClickListener {
             val jobRef = FirebaseDatabase.getInstance()
-                .getReference("Job")
+                .getReference("DummyJob")
                 .child(jobId)
 
             jobRef.child("assignedTo")
