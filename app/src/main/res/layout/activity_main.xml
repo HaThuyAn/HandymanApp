@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Customer Payment Portal"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginBottom="16dp"
+            android:textColor="#000000" />
+
+        <EditText
+            android:id="@+id/etJobId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter Job ID"
+            android:textColor="#000000"
+            android:background="@android:drawable/edit_text"
+            android:layout_marginTop="12dp" />
+
+        <EditText
+            android:id="@+id/etPaymentAmount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Payment Amount"
+            android:inputType="numberDecimal"
+            android:textColor="#000000"
+            android:background="@android:drawable/edit_text"
+            android:layout_marginTop="12dp" />
+
+        <Button
+            android:id="@+id/btnPayCash"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Pay by Cash"
+            android:layout_marginTop="24dp" />
+
+        <Button
+            android:id="@+id/btnPayBkash"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Pay by bKash"
+            android:layout_marginTop="12dp" />
+
+    </LinearLayout>
+</ScrollView>

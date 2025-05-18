@@ -1,0 +1,34 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="20dp">
+
+
+    <ImageView
+        android:id="@+id/statusImageView"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="20dp"
+        android:src="@drawable/green_check" />
+
+    <TextView
+        android:id="@+id/tvStatusMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Payment Status"
+        android:textSize="18sp"
+        android:layout_marginTop="20dp"
+        android:gravity="center" />
+
+    <Button
+        android:id="@+id/btnMakeAnotherPayment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Make Another Payment"
+        android:layout_marginTop="40dp"
+        android:onClick="onMakeAnotherPayment" />
+
+</LinearLayout>
