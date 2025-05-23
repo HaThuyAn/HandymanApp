@@ -1,5 +1,6 @@
 package com.example.handyman
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -49,6 +50,12 @@ class ServiceCategoryFragment : Fragment() {
                 .actionServiceCategoryFragmentToCustomerJobListFragment(customerId)
             Navigation.findNavController(view).navigate(action)
         }
+        val fabSupport = view.findViewById<View>(R.id.fabSupport)
+        fabSupport.setOnClickListener {
+            val intent = Intent(requireContext(), SupportForm::class.java)
+            startActivity(intent)
+        }
+
 
         return view
     }
