@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@+id/handymanJobListFragment" >
+    app:startDestination="@+id/handymanJobBoardFragment" >
 
     <fragment
         android:id="@+id/serviceCategoryFragment"
@@ -16,6 +16,16 @@
             <argument
                 android:name="serviceCategory"
                 app:argType="string"/>
+            <argument
+                android:name="customerId"
+                app:argType="string"/>
+        </action>
+        <action
+            android:id="@+id/action_serviceCategoryFragment_to_customerJobListFragment"
+            app:destination="@id/customerJobListFragment" >
+            <argument
+                android:name="customerId"
+                app:argType="string"/>
         </action>
     </fragment>
 
@@ -26,6 +36,9 @@
         tools:layout="@layout/fragment_job_posting">
         <argument
             android:name="serviceCategory"
+            app:argType="string"/>
+        <argument
+            android:name="customerId"
             app:argType="string"/>
         <action
             android:id="@+id/action_jobPostingFragment_to_orderSummaryFragment"
@@ -154,6 +167,9 @@
         android:name="com.example.handyman.CustomerJobListFragment"
         android:label="CustomerJobListFragment"
         tools:layout="@layout/fragment_customer_job_list" >
+        <argument
+            android:name="customerId"
+            app:argType="string" />
         <action
             android:id="@+id/action_customerJobListFragment_to_customerJobDetailsFragment"
             app:destination="@id/customerJobDetailsFragment">
@@ -382,6 +398,13 @@
                 app:argType="string"
                 android:defaultValue=""/>
         </action>
+        <action
+            android:id="@+id/action_handymanJobBoardFragment_to_handymanJobListFragment"
+            app:destination="@id/handymanJobListFragment">
+            <argument
+                android:name="handymanId"
+                app:argType="string"/>
+        </action>
     </fragment>
     <fragment
         android:id="@+id/handymanJobBoardDetailsFragment"
@@ -502,6 +525,9 @@
         android:name="com.example.handyman.HandymanJobListFragment"
         android:label="HandymanJobListFragment"
         tools:layout="@layout/fragment_customer_job_list" >
+        <argument
+            android:name="handymanId"
+            app:argType="string"/>
         <action
             android:id="@+id/action_handymanJobListFragment_to_handymanJobListDetailsFragment"
             app:destination="@id/handymanJobListDetailsFragment">

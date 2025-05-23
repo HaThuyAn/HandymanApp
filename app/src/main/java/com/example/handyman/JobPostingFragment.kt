@@ -76,8 +76,6 @@ class JobPostingFragment : Fragment() {
         }
     }
 
-    val customerId = "customer2"
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -120,6 +118,7 @@ class JobPostingFragment : Fragment() {
 
         val args = JobPostingFragmentArgs.fromBundle(requireArguments())
         val serviceName = args.serviceCategory
+        val customerId = args.customerId
 
         val etDateFrom = view.findViewById<EditText>(R.id.etDateFrom)
         val etDateTo = view.findViewById<EditText>(R.id.etDateTo)
@@ -328,7 +327,7 @@ class JobPostingFragment : Fragment() {
 
             val action =
                 JobPostingFragmentDirections.actionJobPostingFragmentToOrderSummaryFragment(
-                    customerId = "",
+                    customerId = customerId,
                     serviceCategory = serviceName,
                     problemDesc = jobDescription,
                     dateFrom = dateFrom,

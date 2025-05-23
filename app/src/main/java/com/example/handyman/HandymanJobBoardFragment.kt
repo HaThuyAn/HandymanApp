@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -38,7 +39,7 @@ class HandymanJobBoardFragment : Fragment() {
             onViewDetails = { job ->
                 // Handle "View Details" button click
                 val action = HandymanJobBoardFragmentDirections.actionHandymanJobBoardFragmentToHandymanJobBoardDetailsFragment(
-                        customerId = "",
+                        customerId = job.customerId,
                         jobId = job.jobId,
                         serviceCategory = job.jobCat,
                         problemDesc = job.jobDesc,
@@ -116,6 +117,12 @@ class HandymanJobBoardFragment : Fragment() {
         )
         recyclerView.adapter = adapter
 
+        val avatar = view.findViewById<View>(R.id.ivAvatar)
+        avatar.setOnClickListener {
+            val action = HandymanJobBoardFragmentDirections.actionHandymanJobBoardFragmentToHandymanJobListFragment(handymanID)
+            Navigation.findNavController(view).navigate(action)
+        }
+
         return view
     }
 
@@ -125,39 +132,75 @@ class HandymanJobBoardFragment : Fragment() {
     }
 
     private fun fetchJobsFromDatabase() {
-        val jobRef = FirebaseDatabase.getInstance().getReference("DummyJob")
-        jobRef.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val availableJobs = snapshot.children.mapNotNull { child ->
-                    // 1) Deserialize the Job object
-                    val job = child.getValue(Job::class.java) ?: return@mapNotNull null
-                    // 2) Grab its push-key
-                    val jobId = child.key ?: return@mapNotNull null
-                    // 3) Read quotedHandymen list
-                    val quoted = child
-                        .child("quotedHandymen")
-                        .children
+        val db = FirebaseDatabase.getInstance()
+        val rootRef = db.reference
+
+        // Step 1: Load cancelledJobs list for the current handyman
+        rootRef.child("dummyHandymen")
+            .child(handymanID)
+            .child("cancelledJobs")
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(cancelSnap: DataSnapshot) {
+                    val cancelledJobs = cancelSnap.children
                         .mapNotNull { it.getValue(String::class.java) }
-                    // 4) Skip any job already quoted by this handyman
-                    if (handymanID in quoted) return@mapNotNull null
-                    // 5) Return a copy that includes its ID
-                    job.copy(jobId = jobId)
+                        .toSet()
+
+                    // Step 2: Now load all jobs
+                    rootRef.child("DummyJob")
+                        .addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onDataChange(snapshot: DataSnapshot) {
+                                val availableJobs = snapshot.children.mapNotNull { child ->
+                                    // 1) Deserialize the Job object
+                                    val job = child.getValue(Job::class.java) ?: return@mapNotNull null
+
+                                    // 2) Filter out inactive jobs
+                                    if (job.jobStatus == "Inactive") return@mapNotNull null
+
+                                    // 3) Get job ID
+                                    val jobId = child.key ?: return@mapNotNull null
+
+                                    // 4) Skip if cancelled
+                                    if (jobId in cancelledJobs) return@mapNotNull null
+
+                                    // 5) Check quotedHandymen
+                                    val quoted = child
+                                        .child("quotedHandymen")
+                                        .children
+                                        .mapNotNull { it.getValue(String::class.java) }
+
+                                    // 6) Skip if already quoted
+                                    if (handymanID in quoted) return@mapNotNull null
+
+                                    // 7) Return the job
+                                    job.copy(jobId = jobId)
+                                }
+
+                                adapter.submitList(availableJobs)
+                            }
+
+                            override fun onCancelled(error: DatabaseError) {
+                                Log.e("HandymanJobBoard", "Failed to load jobs", error.toException())
+                                context?.let {
+                                    Toast.makeText(
+                                        it,
+                                        "Error loading jobs: ${error.message}",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            }
+                        })
                 }
 
-                // 6) Update the adapter
-                adapter.submitList(availableJobs)
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.e("HandymanJobBoard", "Failed to load jobs", error.toException())
-                context?.let {
-                    Toast.makeText(
-                        it,
-                        "Error loading jobs: ${error.message}",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e("HandymanJobBoard", "Failed to load cancelled jobs", error.toException())
+                    context?.let {
+                        Toast.makeText(
+                            it,
+                            "Error loading cancelled jobs: ${error.message}",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 }
-            }
-        })
+            })
     }
 }
