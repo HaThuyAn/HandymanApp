@@ -15,6 +15,7 @@ data class Job(
     val jobSalaryFrom: String = "",
     val jobSalaryTo: String = "",
     val jobPaymentOption: String = "",
+    val paymentStatus: String = "",
     val imageUris: List<String> = emptyList(),
     val assignedTo: String = "",
     val jobStatus: String = "",

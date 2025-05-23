@@ -23,20 +23,23 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
+import androidx.navigation.fragment.navArgs
+
 
 class HandymanJobListFragment : Fragment() {
     private var currentCategoryKey = "allJobs"
+    private val args: HandymanJobListFragmentArgs by navArgs()
+    private lateinit var handymanID: String
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: HandymanJobListAdapter
-    val handymanID = "handyman8"
-    val customerId = "customer2"
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        handymanID = args.handymanId
         val view = inflater.inflate(R.layout.fragment_handyman_job_list, container, false)
 
         recyclerView = view.findViewById(R.id.recyclerView)
@@ -47,7 +50,7 @@ class HandymanJobListFragment : Fragment() {
             onViewDetails = { job ->
                 // Handle "View Details" button click
                 val action = HandymanJobListFragmentDirections.actionHandymanJobListFragmentToHandymanJobListDetailsFragment(
-                    customerId = "",
+                    customerId = job.customerId,
                     jobId = job.jobId,
                     serviceCategory = job.jobCat,
                     problemDesc = job.jobDesc,
@@ -65,51 +68,125 @@ class HandymanJobListFragment : Fragment() {
                 )
                 findNavController().navigate(action)
             },
-            onDelete = { job ->
-                AlertDialog.Builder(requireContext())
-                    .setTitle("Withdraw quote?")
-                    .setMessage("Remove your quote for this job?")
-                    .setPositiveButton("Yes") { _, _ ->
+            onDelete = fun(job: Job) {
+                val handymanRef = FirebaseDatabase.getInstance()
+                    .getReference("dummyHandymen")
+                    .child(handymanID)
+                    .child("quotedJobs")
 
-                        val quotesRef = FirebaseDatabase.getInstance()
-                            .getReference("DummyJob")
-                            .child(job.jobId)
-                            .child("quotedHandymen")
+                // Check if the job is in the quotedJobs list before proceeding
+                handymanRef.orderByValue().equalTo(job.jobId)
+                    .addListenerForSingleValueEvent(object : ValueEventListener {
+                        override fun onDataChange(handymanSnapshot: DataSnapshot) {
+                            if (!handymanSnapshot.exists()) {
+                                Toast.makeText(
+                                    context,
+                                    "Cannot cancel.",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                return
+                            }
 
-                        // Find the push-key(s) whose VALUE == this handyman name
-                        quotesRef.orderByValue().equalTo(handymanID)
-                            .addListenerForSingleValueEvent(object : ValueEventListener {
+                            // Proceed with the deletion if the job exists
+                            AlertDialog.Builder(requireContext())
+                                .setTitle("Withdraw quote?")
+                                .setMessage("Remove your quote for this job?")
+                                .setPositiveButton("Yes") { _, _ ->
 
-                                override fun onDataChange(snapshot: DataSnapshot) {
-                                    if (!snapshot.exists()) {
-                                        Toast.makeText(
-                                            context,
-                                            "You haven’t quoted this job.",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                        return
-                                    }
+                                    // Reference to the quotes in DummyJob
+                                    val quotesRef = FirebaseDatabase.getInstance()
+                                        .getReference("DummyJob")
+                                        .child(job.jobId)
+                                        .child("quotedHandymen")
 
-                                    snapshot.children.forEach { it.ref.removeValue() }
+                                    // Find the push-key(s) whose VALUE == this handyman name
+                                    quotesRef.orderByValue().equalTo(handymanID)
+                                        .addListenerForSingleValueEvent(object : ValueEventListener {
+                                            override fun onDataChange(snapshot: DataSnapshot) {
+                                                if (!snapshot.exists()) {
+                                                    Toast.makeText(
+                                                        context,
+                                                        "You haven’t quoted this job.",
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+                                                    return
+                                                }
 
-                                    Toast.makeText(
-                                        context,
-                                        "Your quote was removed.",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+                                                // Remove the job from the quotedHandymen list under DummyJob
+                                                snapshot.children.forEach { it.ref.removeValue() }
+
+                                                // Remove the job ID from the quotedJobs list under dummyHandymen
+                                                handymanSnapshot.children.forEach { it.ref.removeValue() }
+
+                                                // Add the job ID to the cancelledJobs list of the handyman
+                                                val cancelledJobsRef = FirebaseDatabase.getInstance()
+                                                    .getReference("dummyHandymen")
+                                                    .child(handymanID)
+                                                    .child("cancelledJobs")
+
+                                                cancelledJobsRef.push()
+                                                    .setValue(job.jobId)
+                                                    .addOnSuccessListener {
+                                                        // Remove from allJobs as well
+                                                        val allJobsRef = FirebaseDatabase.getInstance()
+                                                            .getReference("dummyHandymen")
+                                                            .child(handymanID)
+                                                            .child("allJobs")
+
+                                                        allJobsRef.orderByValue().equalTo(job.jobId)
+                                                            .addListenerForSingleValueEvent(object : ValueEventListener {
+                                                                override fun onDataChange(snapshot: DataSnapshot) {
+                                                                    snapshot.children.forEach { it.ref.removeValue() }
+
+                                                                    Toast.makeText(
+                                                                        context,
+                                                                        "Your quote was removed successfully and removed from allJobs.",
+                                                                        Toast.LENGTH_SHORT
+                                                                    ).show()
+
+                                                                    // Refresh the list after full cleanup
+                                                                    fetchJobsForCategory(currentCategoryKey)
+                                                                }
+
+                                                                override fun onCancelled(error: DatabaseError) {
+                                                                    Toast.makeText(
+                                                                        context,
+                                                                        "Cancelled but failed to clean up allJobs: ${error.message}",
+                                                                        Toast.LENGTH_LONG
+                                                                    ).show()
+                                                                }
+                                                            })
+                                                    }
+                                                    .addOnFailureListener { e ->
+                                                        Toast.makeText(
+                                                            context,
+                                                            "Failed to add to cancelled jobs: ${e.message}",
+                                                            Toast.LENGTH_LONG
+                                                        ).show()
+                                                    }
+                                            }
+
+                                            override fun onCancelled(error: DatabaseError) {
+                                                Toast.makeText(
+                                                    context,
+                                                    "Failed: ${error.message}",
+                                                    Toast.LENGTH_LONG
+                                                ).show()
+                                            }
+                                        })
                                 }
+                                .setNegativeButton("No", null)
+                                .show()
+                        }
 
-                                override fun onCancelled(error: DatabaseError) {
-                                    Toast.makeText(
-                                        context,
-                                        "Failed: ${error.message}",
-                                        Toast.LENGTH_LONG
-                                    ).show()
-                                }
-                            })
-                    }
-                    .setNegativeButton("No", null)
-                    .show()
+                        override fun onCancelled(error: DatabaseError) {
+                            Toast.makeText(
+                                context,
+                                "Failed to check quoted jobs: ${error.message}",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    })
             },
             onUpdate = fun(job: Job) {
                 val currentStatus = job.jobStatus
@@ -191,7 +268,7 @@ class HandymanJobListFragment : Fragment() {
                                                 // 5) move the jobId under both nodes
                                                 val custRef = FirebaseDatabase.getInstance()
                                                     .getReference("dummyCustomers")
-                                                    .child(customerId)
+                                                    .child(job.customerId)
                                                 val hmRef = FirebaseDatabase.getInstance()
                                                     .getReference("dummyHandymen")
                                                     .child(handymanID)
@@ -231,6 +308,7 @@ class HandymanJobListFragment : Fragment() {
                     "All"    -> "allJobs"
                     "In-progress" -> "inProgressJobs"
                     "Done"        -> "completedJobs"
+                    "Cancelled" -> "cancelledJobs"
                     else          -> return
                 }
                 fetchJobsForCategory(currentCategoryKey)

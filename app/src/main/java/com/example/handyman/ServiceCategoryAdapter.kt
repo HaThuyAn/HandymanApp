@@ -10,7 +10,7 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 
-class ServiceCategoryAdapter(private val onItemClick: (ServiceCategory) -> Unit) : ListAdapter<ServiceCategory, ServiceCategoryAdapter.ViewHolder>(ServiceCategoryDiff) {
+class ServiceCategoryAdapter(private val customerId: String, private val onItemClick: (ServiceCategory) -> Unit) : ListAdapter<ServiceCategory, ServiceCategoryAdapter.ViewHolder>(ServiceCategoryDiff) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
@@ -35,7 +35,7 @@ class ServiceCategoryAdapter(private val onItemClick: (ServiceCategory) -> Unit)
 
             itemView.setOnClickListener {
                 Log.d("ServiceCategoryAdapter", "Item clicked: ${item.name}")
-                val action = ServiceCategoryFragmentDirections.actionServiceCategoryFragmentToJobPostingFragment(item.name)
+                val action = ServiceCategoryFragmentDirections.actionServiceCategoryFragmentToJobPostingFragment(serviceCategory = item.name, customerId = customerId)
                 Log.d("ServiceCategoryAdapter", "Navigating with action: $action")
                 itemView.findNavController().navigate(action)
             }
