@@ -25,6 +25,7 @@
         </activity>
         <activity android:name=".chatbox.ChatListingActivity" android:theme="@style/AppTheme"/>
         <activity android:name=".chatbox.ChatClientActivity" android:theme="@style/AppTheme"/>
+        <activity android:name=".SupportForm" />
         <provider
                 android:name="androidx.core.content.FileProvider"
                 android:authorities="com.example.handyman.fileprovider"

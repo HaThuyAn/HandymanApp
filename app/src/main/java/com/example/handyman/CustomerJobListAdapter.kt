@@ -14,7 +14,8 @@ class CustomerJobListAdapter(
     private val onViewDetails: (Job) -> Unit,
     private val onEdit: (Job) -> Unit,
     private val onDelete: (Job) -> Unit,
-    private val onUpdate: (Job) -> Unit
+    private val onUpdate: (Job) -> Unit,
+    var hideStatus: Boolean = false
 ) : ListAdapter<Job, CustomerJobListAdapter.ViewHolder>(CustomerJobListDiff) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -69,13 +70,28 @@ class CustomerJobListAdapter(
                     "Assigned"
                 else -> item.jobStatusCustomer!!
             }
-            status.text = displayStatus
+//            status.text = displayStatus
+//
+//            when (displayStatus) {
+//                "Not assigned" -> status.setBackgroundResource(R.drawable.status_not_assigned)
+//                "Assigned"     -> status.setBackgroundResource(R.drawable.status_assigned)
+//                "In-progress"  -> status.setBackgroundResource(R.drawable.status_in_progress)
+//                "Done"         -> status.setBackgroundResource(R.drawable.status_done)
+//            }
 
-            when (displayStatus) {
-                "Not assigned" -> status.setBackgroundResource(R.drawable.status_not_assigned)
-                "Assigned"     -> status.setBackgroundResource(R.drawable.status_assigned)
-                "In-progress"  -> status.setBackgroundResource(R.drawable.status_in_progress)
-                "Done"         -> status.setBackgroundResource(R.drawable.status_done)
+            if (hideStatus) {
+                status.visibility = View.GONE
+                status.text = ""
+            } else {
+                status.visibility = View.VISIBLE
+                status.text = displayStatus
+
+                when (displayStatus) {
+                    "Not assigned" -> status.setBackgroundResource(R.drawable.status_not_assigned)
+                    "Assigned"     -> status.setBackgroundResource(R.drawable.status_assigned)
+                    "In-progress"  -> status.setBackgroundResource(R.drawable.status_in_progress)
+                    "Done"         -> status.setBackgroundResource(R.drawable.status_done)
+                }
             }
 
             detailsBttn.setOnClickListener { onViewDetails(item) }

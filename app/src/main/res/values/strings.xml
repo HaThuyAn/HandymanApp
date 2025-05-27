@@ -32,6 +32,7 @@
         <item>Assigned</item>
         <item>In-progress</item>
         <item>Done</item>
+        <item>Cancelled</item>
     </string-array>
     <string-array name="job_statuses_handyman">
         <item>All</item>
@@ -39,5 +40,6 @@
         <item>Accepted</item>
         <item>In-progress</item>
         <item>Done</item>
+        <item>Cancelled</item>
     </string-array>
 </resources>

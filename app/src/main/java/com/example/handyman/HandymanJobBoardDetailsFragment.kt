@@ -82,29 +82,6 @@ class HandymanJobBoardDetailsFragment : Fragment() {
             findNavController().navigateUp()
         }
 
-        val btnQuote: Button = view.findViewById(R.id.btnQuoteJob)
-
-        btnQuote.setOnClickListener {
-            val databaseRef = FirebaseDatabase.getInstance().getReference("DummyJob").child(jobId)
-            // Define a dummy quoted handyman ID
-            val dummyHandymanId = UUID.randomUUID().toString()
-            // Update the "quotedHandymen" field (assuming your Job model includes it)
-            databaseRef.child("quotedHandymen").push().setValue(dummyHandymanId)
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        // Disable the button and show a Toast
-                        btnQuote.isEnabled = false
-                        ViewCompat.setBackgroundTintList(
-                            btnQuote,
-                            ColorStateList.valueOf(Color.parseColor("#FFCCCCCC"))
-                        )
-                        Toast.makeText(context, "Job quoted successfully", Toast.LENGTH_SHORT).show()
-                    } else {
-                        Toast.makeText(context, "Error quoting job", Toast.LENGTH_SHORT).show()
-                    }
-                }
-        }
-
         displayJobImages(view, jobId)
     }
 

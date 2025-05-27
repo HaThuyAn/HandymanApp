@@ -41,8 +41,6 @@ class OrderSummaryFragment : Fragment() {
         val salaryTo      = args.salaryTo
         val paymentOption = args.paymentOption
 
-        val customerID = "customer2"
-
         view.findViewById<TextView>(R.id.tvJobTitle).text = serviceName
         val salaryDisplay = view.findViewById<TextView>(R.id.tvPrice)
         if (salaryFrom.isNotBlank() && salaryTo.isNotBlank()) {
@@ -77,11 +75,12 @@ class OrderSummaryFragment : Fragment() {
                     jobSalaryFrom    = salaryFrom,
                     jobSalaryTo      = salaryTo,
                     jobPaymentOption = paymentOption,
+                    paymentStatus = "",
                     imageUris        = args.imageUris?.map { it.toString() } ?: emptyList()
                 )
 
                 val dbRef    = FirebaseDatabase.getInstance().reference
-                val custPath = "dummyCustomers/$customerID"
+                val custPath = "dummyCustomers/$customerId"
                 val allKey   = dbRef.child(custPath).child("allJobs").push().key!!
                 val naKey    = dbRef.child(custPath).child("notAssignedJobs").push().key!!
 
