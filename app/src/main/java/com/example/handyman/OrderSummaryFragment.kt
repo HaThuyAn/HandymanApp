@@ -14,6 +14,7 @@ import com.google.android.gms.tasks.Tasks
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import java.time.LocalDateTime
 import java.util.UUID
 
 class OrderSummaryFragment : Fragment() {
@@ -64,6 +65,7 @@ class OrderSummaryFragment : Fragment() {
                 val jobId = UUID.randomUUID().toString()
                 val job = Job(
                     jobId            = jobId,
+                    createdAt        = LocalDateTime.now().toString(),
                     customerId       = customerId,
                     jobCat           = serviceName,
                     jobDesc          = jobDescription,

@@ -23,7 +23,7 @@ import com.google.firebase.database.DatabaseError
 class HandymanJobBoardFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: HandymanJobBoardAdapter
-    val handymanID = "handyman7"
+    val handymanID = "handyman8"
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -158,6 +158,10 @@ class HandymanJobBoardFragment : Fragment() {
 
                                     // 3) Get job ID
                                     val jobId = child.key ?: return@mapNotNull null
+
+                                    // 3.5) Skip if job is assigned
+                                    val assignedTo = child.child("assignedTo").getValue(String::class.java)
+                                    if (!assignedTo.isNullOrEmpty()) return@mapNotNull null
 
                                     // 4) Skip if cancelled
                                     if (jobId in cancelledJobs) return@mapNotNull null

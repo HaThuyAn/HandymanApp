@@ -15,6 +15,7 @@ class CustomerJobListAdapter(
     private val onEdit: (Job) -> Unit,
     private val onDelete: (Job) -> Unit,
     private val onUpdate: (Job) -> Unit,
+    val onProceedToPayment: (Job) -> Unit,
     var hideStatus: Boolean = false
 ) : ListAdapter<Job, CustomerJobListAdapter.ViewHolder>(CustomerJobListDiff) {
 
@@ -41,6 +42,8 @@ class CustomerJobListAdapter(
         private val delete: ImageView = itemView.findViewById(R.id.ivDelete)
         private val updateBttn: Button = itemView.findViewById(R.id.btnUpdate)
         private val status: TextView = itemView.findViewById(R.id.tvStatus)
+        private val btnProceedToPayment: Button = itemView.findViewById(R.id.btnProceedToPayment)
+
 
         fun bind(item: Job) {
             // Bind your Job data to the views
@@ -93,6 +96,15 @@ class CustomerJobListAdapter(
                     "Done"         -> status.setBackgroundResource(R.drawable.status_done)
                 }
             }
+            if (item.paymentStatus == "done") {
+                updateBttn.visibility = View.GONE
+                btnProceedToPayment.visibility = View.GONE
+                status.text = "Payment: Done"
+                status.setBackgroundResource(R.drawable.status_done)
+            } else {
+                updateBttn.visibility = View.VISIBLE
+                btnProceedToPayment.visibility = View.VISIBLE
+            }
 
             detailsBttn.setOnClickListener { onViewDetails(item) }
             edit.setOnClickListener    { onEdit(item) }
@@ -125,6 +137,9 @@ class CustomerJobListAdapter(
                         ).show()
                     }
                 }
+            }
+            btnProceedToPayment.setOnClickListener {
+                onProceedToPayment(item)
             }
         }
     }

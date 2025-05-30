@@ -17,6 +17,7 @@ import com.google.firebase.database.*
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import androidx.navigation.fragment.navArgs
+import java.time.LocalDateTime
 
 class CustomerJobListFragment : Fragment() {
     private var currentCategoryKey = "allJobs"
@@ -66,39 +67,55 @@ class CustomerJobListFragment : Fragment() {
                 findNavController().navigate(action)
             },
             onEdit = { job ->
-                if (job.jobStatus != "NotAssigned") {
-                    Toast.makeText(
-                        context,
-                        "Only jobs that are not yet assigned can be edited.",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    return@CustomerJobListAdapter
-                }
+                val customerRef = FirebaseDatabase.getInstance()
+                    .getReference("dummyCustomers")
+                    .child(customerId)
+                    .child("notAssignedJobs")
 
-                val urisArray: Array<Uri> = job.imageUris
-                    .map { Uri.parse(it) }
-                    .toTypedArray()
+                // Check if the jobId exists in notAssignedJobs (jobId is stored as a value)
+                customerRef.orderByValue().equalTo(job.jobId)
+                    .addListenerForSingleValueEvent(object : ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            if (!snapshot.exists()) {
+                                Toast.makeText(
+                                    context,
+                                    "Only jobs that are not yet assigned can be edited.",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                return
+                            }
 
-                val action =
-                    CustomerJobListFragmentDirections
-                        .actionCustomerJobListFragmentToJobEditFragment(
-                            customerId   = customerId,
-                            jobId        = job.jobId,
-                            serviceCategory = job.jobCat,
-                            problemDesc  = job.jobDesc,
-                            dateFrom     = job.jobDateFrom,
-                            dateTo       = job.jobDateTo,
-                            timeFrom     = job.jobTimeFrom,
-                            timeTo       = job.jobTimeTo,
-                            location     = job.jobLocation,
-                            salaryFrom   = job.jobSalaryFrom,
-                            salaryTo     = job.jobSalaryTo,
-                            paymentOption= job.jobPaymentOption,
-                            imageUris    = urisArray,
-                            assignedTo   = job.assignedTo,
-                            jobStatus    = job.jobStatus
-                        )
-                findNavController().navigate(action)
+                            // Proceed with edit navigation
+                            val urisArray: Array<Uri> = job.imageUris
+                                .map { Uri.parse(it) }
+                                .toTypedArray()
+
+                            val action =
+                                CustomerJobListFragmentDirections
+                                    .actionCustomerJobListFragmentToJobEditFragment(
+                                        customerId     = customerId,
+                                        jobId          = job.jobId,
+                                        serviceCategory= job.jobCat,
+                                        problemDesc    = job.jobDesc,
+                                        dateFrom       = job.jobDateFrom,
+                                        dateTo         = job.jobDateTo,
+                                        timeFrom       = job.jobTimeFrom,
+                                        timeTo         = job.jobTimeTo,
+                                        location       = job.jobLocation,
+                                        salaryFrom     = job.jobSalaryFrom,
+                                        salaryTo       = job.jobSalaryTo,
+                                        paymentOption  = job.jobPaymentOption,
+                                        imageUris      = urisArray,
+                                        assignedTo     = job.assignedTo,
+                                        jobStatus      = job.jobStatus
+                                    )
+                            findNavController().navigate(action)
+                        }
+
+                        override fun onCancelled(error: DatabaseError) {
+                            Toast.makeText(context, "Database error: ${error.message}", Toast.LENGTH_SHORT).show()
+                        }
+                    })
             },
             onDelete = fun(job: Job) {
                 val customerRef = FirebaseDatabase.getInstance()
@@ -288,13 +305,11 @@ class CustomerJobListFragment : Fragment() {
                                                 jobRef.child("jobStatus")
                                                     .setValue(newStatus)
                                                     .addOnSuccessListener {
-//                                                        val updatedList = if (newStatus == "In-progress" || newStatus == "Done") {
-//                                                            adapter.currentList.filter { it.jobId != job.jobId }
-//                                                        } else {
-//                                                            // there aren't any other cases, but just in case:
-//                                                            adapter.currentList
-//                                                        }
-//                                                        adapter.submitList(updatedList)
+                                                        if (newStatus == "Done") {
+                                                            val finishedAt = LocalDateTime.now().toString()
+                                                            jobRef.child("finishedBy").setValue(finishedAt)
+                                                        }
+
                                                         if (currentCategoryKey != "allJobs") {
                                                             val updatedList = adapter.currentList.filter { it.jobId != job.jobId }
                                                             adapter.submitList(updatedList)
@@ -341,6 +356,20 @@ class CustomerJobListFragment : Fragment() {
                     }
                     .setNegativeButton("Cancel", null)
                     .show()
+            },
+
+            onProceedToPayment = { job ->
+                if (job.jobStatus != "Done") {
+                    Toast.makeText(context, "Job is not marked as Done yet.", Toast.LENGTH_SHORT).show()
+                    return@CustomerJobListAdapter
+                }
+
+                val action = CustomerJobListFragmentDirections
+                    .actionCustomerJobListFragmentToCustomerJobPaymentFragment(
+                        customerId = customerId,
+                        jobId = job.jobId
+                    )
+                findNavController().navigate(action)
             }
         )
         recyclerView.adapter = adapter
