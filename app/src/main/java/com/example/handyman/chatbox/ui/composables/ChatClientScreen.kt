@@ -51,8 +51,6 @@ class ChatClientViewModel : ViewModel() {
     }
 
     private fun listenForMessages() {
-        Log.d("ChatID", "ViewModel: ${chatID.value}")
-
         database.collection("chats")
             .document(chatID.value)
             .collection("messages")

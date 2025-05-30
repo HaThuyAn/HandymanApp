@@ -9,16 +9,13 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 
 
 class HandymanJobListAdapter(
     private val handymanId: String,
     private val onViewDetails: (Job) -> Unit,
     private val onDelete: (Job) -> Unit,
-    private val onUpdate: (Job) -> Unit
+    private val onUpdate: (Job) -> Unit,
 ) : ListAdapter<Job, HandymanJobListAdapter.ViewHolder>(HandymanJobListDiff) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

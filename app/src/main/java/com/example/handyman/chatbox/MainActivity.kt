@@ -23,15 +23,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
+import com.example.handyman.MainJobBoard
 import com.example.handyman.chatbox.ui.composables.LoginButton
 import com.example.handyman.chatbox.ui.composables.LoginInput
 import com.example.handyman.ui.theme.HandymanTheme
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 
 //import com.google.firebase.messaging.FirebaseMessaging
 
 class MainActivity : ComponentActivity() {
     private lateinit var auth: FirebaseAuth
+    private lateinit var database: FirebaseDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,18 +81,6 @@ class MainActivity : ComponentActivity() {
                                     y = 60.dp
                                 )
                         )
-
-//                        Image(
-//                            painter = painterResource(id = R.drawable.ic_overflow_dot_menu),
-//                            contentDescription = "Overflow menu icon",
-//                            modifier = Modifier
-//                                .align(alignment = Alignment.TopStart)
-//                                .offset(
-//                                    x = 375.dp,
-//                                    y = 56.dp
-//                                )
-//                                .requiredSize(size = 32.dp)
-//                        )
                     }
 
                     Column(
@@ -119,13 +110,15 @@ class MainActivity : ComponentActivity() {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    val intent = Intent(this@MainActivity, ChatListingActivity::class.java)
-                    intent.putExtra("userId", auth.currentUser?.email)
+//                    val intent = Intent(this@MainActivity, ChatListingActivity::class.java)
+                    val intent = Intent(this@MainActivity, MainJobBoard::class.java).apply {
+                        putExtra("user_type", "handyman")
+                    }
 //                    getFCMToken()
                     startActivity(intent)
                 } else {
                     Log.e("FirebaseAuth", "Sign-in failed", task.exception)
-                    Toast.makeText(this@MainActivity, "Cannot login as $email", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@MainActivity, "Failed to login as $email", Toast.LENGTH_LONG).show()
                 }
             }
     }

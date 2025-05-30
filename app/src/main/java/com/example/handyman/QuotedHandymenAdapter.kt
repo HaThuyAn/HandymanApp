@@ -2,6 +2,8 @@
 
 package com.example.handyman
 
+import android.content.Context
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.view.LayoutInflater
@@ -12,6 +14,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.example.handyman.chatbox.ChatClientActivity
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -21,14 +24,16 @@ class QuotedHandymenAdapter(
     private val handymanList: List<String>,
     private val jobId: String,
     initialAssignedId: String,
-    private val customerId: String
+    private val customerId: String,
+    private val context: Context
 ) : RecyclerView.Adapter<QuotedHandymenAdapter.ViewHolder>() {
 
     private var assignedId: String = initialAssignedId
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val tvTitle: TextView = itemView.findViewById(R.id.tvTitle)
-        val assignBttn: Button = itemView.findViewById(R.id.btnAssign)
+        val assignBtn: Button = itemView.findViewById(R.id.btnAssign)
+        val messageBtn: Button = itemView.findViewById(R.id.btnMessage)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -48,32 +53,32 @@ class QuotedHandymenAdapter(
 
         when {
             isThisAssigned -> {
-                holder.assignBttn.text = "Assigned"
-                holder.assignBttn.isEnabled = false
+                holder.assignBtn.text = "Assigned"
+                holder.assignBtn.isEnabled = false
                 ViewCompat.setBackgroundTintList(
-                    holder.assignBttn,
+                    holder.assignBtn,
                     ColorStateList.valueOf(Color.parseColor("#50C878"))
                 )
             }
             isAssigned -> {
-                holder.assignBttn.text = "Assign"
-                holder.assignBttn.isEnabled = false
+                holder.assignBtn.text = "Assign"
+                holder.assignBtn.isEnabled = false
                 ViewCompat.setBackgroundTintList(
-                    holder.assignBttn,
+                    holder.assignBtn,
                     ColorStateList.valueOf(Color.parseColor("#FFCCCCCC"))
                 )
             }
             else -> {
-                holder.assignBttn.text = "Assign"
-                holder.assignBttn.isEnabled = true
+                holder.assignBtn.text = "Assign"
+                holder.assignBtn.isEnabled = true
                 ViewCompat.setBackgroundTintList(
-                    holder.assignBttn,
+                    holder.assignBtn,
                     ColorStateList.valueOf(Color.parseColor("#ff33b5e5"))
                 )
             }
         }
 
-        holder.assignBttn.setOnClickListener {
+        holder.assignBtn.setOnClickListener {
             val jobRef = FirebaseDatabase.getInstance()
                 .getReference("DummyJob")
                 .child(jobId)
@@ -105,6 +110,7 @@ class QuotedHandymenAdapter(
                             override fun onDataChange(snapshot: DataSnapshot) {
                                 snapshot.children.forEach { it.ref.removeValue() }
                             }
+
                             override fun onCancelled(error: DatabaseError) {}
                         })
 
@@ -130,6 +136,7 @@ class QuotedHandymenAdapter(
                                         ).show()
                                     }
                             }
+
                             override fun onCancelled(error: DatabaseError) {}
                         })
 
@@ -147,6 +154,16 @@ class QuotedHandymenAdapter(
                         Toast.LENGTH_LONG
                     ).show()
                 }
+        }
+
+        holder.messageBtn.setOnClickListener {
+            // Hard-coded values for testing purpose
+            val intent = Intent(context, ChatClientActivity::class.java).apply {
+                putExtra("chatID", "8aFmUMySX7fBpFRoK7oz")
+                putExtra("uid", "handyman7")
+                putExtra("username", "Handyman7")
+            }
+            context.startActivity(intent)
         }
     }
 }
