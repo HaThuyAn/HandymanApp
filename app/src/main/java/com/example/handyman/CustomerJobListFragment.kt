@@ -341,6 +341,20 @@ class CustomerJobListFragment : Fragment() {
                     }
                     .setNegativeButton("Cancel", null)
                     .show()
+            },
+
+            onProceedToPayment = { job ->
+                if (job.jobStatus != "Done") {
+                    Toast.makeText(context, "Job is not marked as Done yet.", Toast.LENGTH_SHORT).show()
+                    return@CustomerJobListAdapter
+                }
+
+                val action = CustomerJobListFragmentDirections
+                    .actionCustomerJobListFragmentToCustomerJobPaymentFragment(
+                        customerId = customerId,
+                        jobId = job.jobId
+                    )
+                findNavController().navigate(action)
             }
         )
         recyclerView.adapter = adapter

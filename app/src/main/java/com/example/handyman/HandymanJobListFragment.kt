@@ -24,6 +24,8 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import androidx.navigation.fragment.navArgs
+import android.widget.EditText
+
 
 
 class HandymanJobListFragment : Fragment() {
@@ -194,12 +196,13 @@ class HandymanJobListFragment : Fragment() {
                 // build *only* the valid next‐step list
                 val nextStatuses = when (currentStatus) {
                     "In-progress" -> arrayOf("Done")
-                    "Done"        -> arrayOf()            // nothing left to do
-                    else          -> arrayOf("In-progress")  // everything before In-progress
+                    "Done" -> arrayOf()            // nothing left to do
+                    else -> arrayOf("In-progress")  // everything before In-progress
                 }
 
                 if (nextStatuses.isEmpty()) {
-                    Toast.makeText(context, "No further updates available", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "No further updates available", Toast.LENGTH_SHORT)
+                        .show()
                     return
                 }
 
@@ -245,7 +248,8 @@ class HandymanJobListFragment : Fragment() {
 //                                                            adapter.currentList
 //                                                        }
                                                         if (currentCategoryKey != "allJobs") {
-                                                            val updatedList = adapter.currentList.filter { it.jobId != job.jobId }
+                                                            val updatedList =
+                                                                adapter.currentList.filter { it.jobId != job.jobId }
                                                             adapter.submitList(updatedList)
                                                         }
                                                     }
@@ -257,11 +261,13 @@ class HandymanJobListFragment : Fragment() {
                                                         "acceptedJobs",   // handyman’s old
                                                         "inProgressJobs"  // new
                                                     )
+
                                                     "Done" -> Triple(
                                                         "inProgressJobs",
                                                         "inProgressJobs",
                                                         "completedJobs"
                                                     )
+
                                                     else -> return
                                                 }
 
@@ -279,6 +285,7 @@ class HandymanJobListFragment : Fragment() {
                                                 fetchJobsForCategory(currentCategoryKey)
                                             }
                                         }
+
                                         override fun onCancelled(e: DatabaseError) {}
                                     })
                             }
@@ -292,6 +299,66 @@ class HandymanJobListFragment : Fragment() {
                     }
                     .setNegativeButton("Cancel", null)
                     .show()
+            },
+            onPaymentProceed = { job ->
+                if (job.jobStatus != "Done") {
+                    Toast.makeText(context, "Job is not marked as Done yet.", Toast.LENGTH_SHORT).show()
+                } else {
+                    val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_payment_input, null)
+                    val etAmount = dialogView.findViewById<EditText>(R.id.etAmount)
+
+                    AlertDialog.Builder(requireContext())
+                        .setTitle("Proceed with Payment")
+                        .setView(dialogView)
+                        .setPositiveButton("Confirm") { dialogInterface, _ ->
+                            val enteredAmountStr = etAmount.text.toString()
+
+                            if (enteredAmountStr.isBlank()) {
+                                Toast.makeText(context, "Amount cannot be empty", Toast.LENGTH_SHORT).show()
+                                return@setPositiveButton
+                            }
+
+                            val enteredAmount = enteredAmountStr.toDoubleOrNull()
+                            if (enteredAmount == null) {
+                                Toast.makeText(context, "Invalid number entered", Toast.LENGTH_SHORT).show()
+                                return@setPositiveButton
+                            }
+
+                            val from = job.jobSalaryFrom.toDoubleOrNull()
+                            val to = job.jobSalaryTo.toDoubleOrNull()
+
+                            val isOutOfRange = from != null && to != null && (enteredAmount < from || enteredAmount > to)
+
+                            val proceedWithUpdate = {
+                                val jobRef = FirebaseDatabase.getInstance()
+                                    .getReference("DummyJob")
+                                    .child(job.jobId)
+
+                                jobRef.child("handypay").setValue(enteredAmountStr)
+                                    .addOnSuccessListener {
+                                        Toast.makeText(context, "Payment recorded: AUD $enteredAmountStr", Toast.LENGTH_SHORT).show()
+                                    }
+                                    .addOnFailureListener { e ->
+                                        Toast.makeText(context, "Failed: ${e.message}", Toast.LENGTH_LONG).show()
+                                    }
+                            }
+
+                            if (isOutOfRange) {
+                                AlertDialog.Builder(requireContext())
+                                    .setTitle("Amount Outside Range")
+                                    .setMessage("This amount is outside the job's salary range of AUD ${from?.toInt()} - ${to?.toInt()}. Proceed anyway?")
+                                    .setPositiveButton("Yes") { _, _ ->
+                                        proceedWithUpdate()
+                                    }
+                                    .setNegativeButton("No", null)
+                                    .show()
+                            } else {
+                                proceedWithUpdate()
+                            }
+                        }
+                        .setNegativeButton("Cancel", null)
+                        .show()
+                }
             }
         )
         recyclerView.adapter = adapter

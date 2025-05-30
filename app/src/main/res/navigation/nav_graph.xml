@@ -280,6 +280,16 @@
                 app:argType="string"
                 android:defaultValue=""/>
         </action>
+        <action
+            android:id="@+id/action_customerJobListFragment_to_customerJobPaymentFragment"
+            app:destination="@id/customerJobPaymentFragment">
+            <argument
+                android:name="customerId"
+                app:argType="string" />
+            <argument
+                android:name="jobId"
+                app:argType="string" />
+        </action>
     </fragment>
     <fragment
         android:id="@+id/customerJobDetailsFragment"
@@ -640,5 +650,39 @@
             android:name="jobStatus"
             app:argType="string"
             android:defaultValue=""/>
+    </fragment>
+    <fragment
+        android:id="@+id/customerJobPaymentFragment"
+        android:name="com.example.handyman.CustomerJobPaymentFragment"
+        android:label="CustomerJobPaymentFragment"
+        tools:layout="@layout/fragment_customer_job_payment">
+        <argument
+            android:name="customerId"
+            app:argType="string" />
+        <argument
+            android:name="jobId"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_customerJobPaymentFragment_to_paymentSuccessFragment"
+            app:destination="@id/paymentSuccessFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/paymentSuccessFragment"
+        android:name="com.example.handyman.PaymentSuccessFragment"
+        android:label="PaymentSuccessFragment"
+        tools:layout="@layout/fragment_payment_success">
+
+        <argument
+            android:name="customerId"
+            app:argType="string" />
+
+        <action
+            android:id="@+id/action_paymentSuccessFragment_to_customerJobListFragment"
+            app:destination="@id/customerJobListFragment">
+            <argument
+                android:name="customerId"
+                app:argType="string" />
+        </action>
     </fragment>
 </navigation>

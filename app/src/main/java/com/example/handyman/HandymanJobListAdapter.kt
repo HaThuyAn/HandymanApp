@@ -18,7 +18,9 @@ class HandymanJobListAdapter(
     private val handymanId: String,
     private val onViewDetails: (Job) -> Unit,
     private val onDelete: (Job) -> Unit,
-    private val onUpdate: (Job) -> Unit
+    private val onUpdate: (Job) -> Unit,
+    val onPaymentProceed: (Job) -> Unit
+
 ) : ListAdapter<Job, HandymanJobListAdapter.ViewHolder>(HandymanJobListDiff) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -43,6 +45,8 @@ class HandymanJobListAdapter(
         private val delete: ImageView = itemView.findViewById(R.id.ivDelete)
         private val updateBttn   = itemView.findViewById<Button>(R.id.btnUpdate)
         private val status: TextView = itemView.findViewById(R.id.tvStatus)
+        val btnProceedPayment: Button = itemView.findViewById(R.id.btnProceedPayment)
+
 
         fun bind(item: Job) {
             // Bind your Job data to the views
@@ -130,6 +134,9 @@ class HandymanJobListAdapter(
                         ).show()
                     }
                 }
+            }
+            btnProceedPayment.setOnClickListener {
+                onPaymentProceed(item)
             }
         }
     }
