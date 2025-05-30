@@ -82,7 +82,7 @@ class CustomerJobDetailsFragment : Fragment() {
         locationDisplay.text = "$location, Melbourne, VIC"
 
         // Initialize the adapter with the empty list.
-        adapter = QuotedHandymenAdapter(handymanList, jobId, assignedTo, "customer2")
+        adapter = QuotedHandymenAdapter(handymanList, jobId, assignedTo, "customer2", requireContext())
         recyclerView.adapter = adapter
 
         val quotedHandymenRef = FirebaseDatabase.getInstance()

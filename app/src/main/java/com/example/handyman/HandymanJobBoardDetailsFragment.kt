@@ -1,5 +1,6 @@
 package com.example.handyman
 
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.net.Uri
@@ -18,6 +19,7 @@ import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.example.handyman.chatbox.ChatClientActivity
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
@@ -75,7 +77,21 @@ class HandymanJobBoardDetailsFragment : Fragment() {
         val locationDisplay = view.findViewById<TextView>(R.id.tvAddress)
         locationDisplay.text = "$location, Melbourne, VIC"
 
+        val btnMessage: Button = view.findViewById(R.id.btnMessage)
+
         val btnReturn: Button = view.findViewById(R.id.btnReturn)
+
+        btnMessage.setOnClickListener {
+            val context = requireContext()
+
+            // Hard-coded values for testing purpose
+            val intent = Intent(context, ChatClientActivity::class.java).apply {
+                putExtra("chatID", "8aFmUMySX7fBpFRoK7oz")
+                putExtra("uid", "handyman7")
+                putExtra("username", "Handyman7")
+            }
+            context.startActivity(intent)
+        }
 
         // Set a click listener on the return button
         btnReturn.setOnClickListener {
