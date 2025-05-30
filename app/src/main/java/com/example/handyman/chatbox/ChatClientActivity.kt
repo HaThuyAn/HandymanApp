@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.example.handyman.chatbox.ui.composables.ChatClientScreen
 import com.example.handyman.ui.theme.HandymanTheme
+import com.example.handyman.utils.SessionManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -43,7 +44,8 @@ class ChatClientActivity : ComponentActivity() {
 
     private fun sendMessage(chatID: String, receiverID: String, content: String = "") {
         val message = hashMapOf(
-            "senderId" to auth.currentUser?.uid,
+//            "senderId" to auth.currentUser?.uid,
+            "senderId" to SessionManager.currentUserID,
             "receiverId" to receiverID,
             "timestamp" to FieldValue.serverTimestamp(),  // Use Firebase server time for more consistency
             "content" to content

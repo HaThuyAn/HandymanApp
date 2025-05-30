@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.handyman.R
+import com.example.handyman.utils.SessionManager
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -172,7 +173,8 @@ fun ChatClientScreen(
             items(messages) { message ->
                 ChatBubble(
                     message = message.content,
-                    isUserMessage = message.senderId == FirebaseAuth.getInstance().currentUser?.uid
+//                    isUserMessage = message.senderId == FirebaseAuth.getInstance().currentUser?.uid
+                    isUserMessage = message.senderId == SessionManager.currentUserID
                 )
                 Spacer(modifier = Modifier.height(7.dp))
             }
