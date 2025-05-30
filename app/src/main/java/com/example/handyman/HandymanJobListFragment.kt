@@ -241,12 +241,11 @@ class HandymanJobListFragment : Fragment() {
                                                 jobRef.child("jobStatus")
                                                     .setValue(newStatus)
                                                     .addOnSuccessListener {
-//                                                        val updatedList = if (newStatus == "In-progress" || newStatus == "Done") {
-//                                                            adapter.currentList.filter { it.jobId != job.jobId }
-//                                                        } else {
-//                                                            // there aren't any other cases, but just in case:
-//                                                            adapter.currentList
-//                                                        }
+                                                        if (newStatus == "Done") {
+                                                            val finishedAt = java.time.LocalDateTime.now().toString()
+                                                            jobRef.child("finishedBy").setValue(finishedAt)
+                                                        }
+
                                                         if (currentCategoryKey != "allJobs") {
                                                             val updatedList =
                                                                 adapter.currentList.filter { it.jobId != job.jobId }

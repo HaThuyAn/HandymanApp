@@ -69,7 +69,7 @@ class HandymanJobListAdapter(
             tvTime.text = "${item.jobTimeFrom} — ${item.jobTimeTo}"
             tvLocation.text = "${item.jobLocation}, Melbourne, VIC"
 
-            val hasQuoted  = item.quotedHandymen
+            val hasQuoted = item.quotedHandymen
                 .orEmpty()
                 .containsValue(handymanId)
             val isAssigned = item.assignedTo == handymanId
@@ -83,19 +83,19 @@ class HandymanJobListAdapter(
 
                 // pick one of four status labels
                 val displayStatus = when {
-                    hasQuoted && !isAssigned       -> "Quoted"
-                    isAssigned && !hasOverall      -> "Accepted"
-                    item.jobStatus == "In-progress"-> "In-progress"
-                    else                            -> "Done"
+                    hasQuoted && !isAssigned -> "Quoted"
+                    isAssigned && !hasOverall -> "Accepted"
+                    item.jobStatus == "In-progress" -> "In-progress"
+                    else -> "Done"
                 }
                 status.text = displayStatus
 
                 // apply matching background
                 when (displayStatus) {
-                    "Quoted"       -> status.setBackgroundResource(R.drawable.status_not_assigned)
-                    "Accepted"     -> status.setBackgroundResource(R.drawable.status_assigned)
-                    "In-progress"  -> status.setBackgroundResource(R.drawable.status_in_progress)
-                    "Done"         -> status.setBackgroundResource(R.drawable.status_done)
+                    "Quoted" -> status.setBackgroundResource(R.drawable.status_not_assigned)
+                    "Accepted" -> status.setBackgroundResource(R.drawable.status_assigned)
+                    "In-progress" -> status.setBackgroundResource(R.drawable.status_in_progress)
+                    "Done" -> status.setBackgroundResource(R.drawable.status_done)
                 }
             }
             if (item.paymentStatus == "done") {
@@ -117,8 +117,9 @@ class HandymanJobListAdapter(
             }
 
             if (item.assignedTo.isNullOrBlank()) {
+                // No handyman assigned at all
                 updateBttn.isEnabled = false
-                updateBttn.alpha     = 0.5f
+                updateBttn.alpha = 0.5f
                 updateBttn.setOnClickListener {
                     Toast.makeText(
                         itemView.context,
@@ -126,15 +127,28 @@ class HandymanJobListAdapter(
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-            }
-            else {
+            } else if (item.assignedTo != handymanId) {
+                // Assigned to someone else
+                updateBttn.isEnabled = false
+                updateBttn.alpha = 0.5f
+                updateBttn.setOnClickListener {
+                    Toast.makeText(
+                        itemView.context,
+                        "This job is assigned to another handyman.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            } else {
+                // Assigned to this handyman
                 if (item.jobStatus != "Done") {
                     updateBttn.isEnabled = true
-                    updateBttn.alpha     = 1.0f
+                    updateBttn.alpha = 1.0f
                     updateBttn.setOnClickListener {
                         onUpdate(item)
                     }
                 } else {
+                    updateBttn.isEnabled = false
+                    updateBttn.alpha = 0.5f
                     updateBttn.setOnClickListener {
                         Toast.makeText(
                             itemView.context,
