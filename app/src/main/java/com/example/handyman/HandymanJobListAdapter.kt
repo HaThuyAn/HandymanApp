@@ -98,6 +98,15 @@ class HandymanJobListAdapter(
                     "Done"         -> status.setBackgroundResource(R.drawable.status_done)
                 }
             }
+            if (item.paymentStatus == "done") {
+                updateBttn.visibility = View.GONE
+                btnProceedPayment.visibility = View.GONE
+                status.text = "Payment: Done"
+                status.setBackgroundResource(R.drawable.status_done)
+            } else {
+                updateBttn.visibility = View.VISIBLE
+                btnProceedPayment.visibility = View.VISIBLE
+            }
 
             detailsBttn.setOnClickListener {
                 onViewDetails(item)
