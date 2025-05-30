@@ -1,0 +1,48 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="24dp">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tvJobTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Job Title"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/tvJobDesc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Job Description"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/tvRequestedAmount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Requested Amount: AUD ..."
+            android:textColor="@android:color/holo_red_dark"
+            android:layout_marginBottom="24dp" />
+
+        <Button
+            android:id="@+id/btnPayCash"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Pay with Cash"
+            android:layout_marginBottom="16dp" />
+
+        <Button
+            android:id="@+id/btnPayBkash"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Pay with bKash" />
+    </LinearLayout>
+</ScrollView>
