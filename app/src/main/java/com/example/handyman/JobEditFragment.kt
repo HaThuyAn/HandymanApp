@@ -31,6 +31,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import java.io.File
+import java.time.LocalDateTime
 import java.util.UUID
 
 class JobEditFragment : Fragment() {
@@ -442,6 +443,7 @@ class JobEditFragment : Fragment() {
                 "jobSalaryFrom"    to salaryFrom,
                 "jobSalaryTo"      to salaryTo,
                 "jobPaymentOption" to paymentOption,
+                "lastUpdate"       to LocalDateTime.now().toString()
             )
 
             val dbRef = Firebase.database
