@@ -14,6 +14,8 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.navigation.Navigation
 import com.example.handyman.utils.SessionManager
 import com.example.handyman.MainJobBoard
+import com.example.handyman.ChooseAccountType
+
 
 
 private const val TAG = "ServiceCategoryFragment"
@@ -59,13 +61,14 @@ class ServiceCategoryFragment : Fragment() {
             startActivity(intent)
         }
 
+
         val logoutIcon = view.findViewById<View>(R.id.ivLogout)
         logoutIcon.setOnClickListener {
             // Clear session
             SessionManager.clearSessionXML(requireContext())
 
-            // Redirect to login activity
-            val intent = Intent(requireContext(), MainJobBoard::class.java)
+            // Redirect to ChooseAccountType activity
+            val intent = Intent(requireContext(), ChooseAccountTypeActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
         }

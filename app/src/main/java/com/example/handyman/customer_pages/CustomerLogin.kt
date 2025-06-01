@@ -42,6 +42,15 @@ fun CustomerLogin(modifier: Modifier = Modifier, navController: NavController) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Icon(
+            painter = painterResource(id = R.drawable.arrow_back),
+            contentDescription = "Back",
+            modifier = Modifier
+                .align(Alignment.Start)
+                .clickable { navController.popBackStack() }
+        )
+        Spacer(modifier = Modifier.height(12.dp))
+
         Text("Log in", fontSize = 24.sp)
         Spacer(modifier = Modifier.height(16.dp))
 

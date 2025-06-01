@@ -64,7 +64,7 @@ fun CustomerHomeUnverified(modifier: Modifier = Modifier, navController: NavCont
                     // Clear session
                     SessionManager.clearSession(context)
                     // Navigate to login, removing the back stack
-                    navController.navigate("customerLogin") {
+                    navController.navigate("chooseAccountType") {
                         popUpTo(navController.graph.startDestinationId) { inclusive = true }
                         launchSingleTop = true
                     }

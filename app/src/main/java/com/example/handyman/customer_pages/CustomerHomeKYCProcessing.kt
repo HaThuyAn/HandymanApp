@@ -58,7 +58,7 @@ fun CustomerHomeKYCProcessing(modifier: Modifier = Modifier, navController: NavC
                 .padding(top = 24.dp, end = 24.dp)
                 .clickable {
                     SessionManager.clearSession(context)
-                    navController.navigate("customerLogin") {
+                    navController.navigate("chooseAccountType") {
                         popUpTo(navController.graph.startDestinationId) { inclusive = true }
                         launchSingleTop = true
                     }
