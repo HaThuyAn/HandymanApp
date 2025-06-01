@@ -21,4 +21,10 @@ object SessionManager {
         val prefs: SharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
         prefs.edit().clear().apply()
     }
+
+    fun clearSessionXML(context: Context) {
+        val sharedPref = context.getSharedPreferences("UserSession", Context.MODE_PRIVATE)
+        sharedPref.edit().clear().apply()
+    }
+
 }

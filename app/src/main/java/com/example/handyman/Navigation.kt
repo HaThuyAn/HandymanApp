@@ -16,8 +16,11 @@ import com.example.handyman.customer_pages.CustomerHomeKYCProcessing
 import com.example.handyman.customer_pages.CustomerKYCLanding
 import com.example.handyman.customer_pages.CustomerKYCCaptureID
 import com.example.handyman.customer_pages.CustomerKYCAddressForm
-import com.example.handyman.customer_pages.CustomerKYCCodeOTP
 import com.example.handyman.customer_pages.CustomerKYCPhoneNumber
+
+//Handyman pages
+import com.example.handyman.handyman_pages.HandymanSignup
+import com.example.handyman.handyman_pages.HandymanLogin
 
 
 @Composable
@@ -30,6 +33,16 @@ fun Navigation(modifier: Modifier = Modifier, startDestination: String = "landin
         }
         composable("chooseAccountType") {
             ChooseAccountType(navController = navController)
+        }
+
+//        Handyman pages
+
+
+        composable("handymanSignup") {
+            HandymanSignup(modifier, navController)
+        }
+        composable("handymanLogin") {
+            HandymanLogin(modifier, navController)
         }
 
 //        Customer pages

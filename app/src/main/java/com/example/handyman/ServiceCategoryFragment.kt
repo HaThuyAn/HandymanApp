@@ -12,6 +12,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.navigation.Navigation
+import com.example.handyman.utils.SessionManager
+import com.example.handyman.MainJobBoard
+
 
 private const val TAG = "ServiceCategoryFragment"
 val customerId = "customer2"
@@ -56,6 +59,16 @@ class ServiceCategoryFragment : Fragment() {
             startActivity(intent)
         }
 
+        val logoutIcon = view.findViewById<View>(R.id.ivLogout)
+        logoutIcon.setOnClickListener {
+            // Clear session
+            SessionManager.clearSessionXML(requireContext())
+
+            // Redirect to login activity
+            val intent = Intent(requireContext(), MainJobBoard::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+        }
 
         return view
     }
