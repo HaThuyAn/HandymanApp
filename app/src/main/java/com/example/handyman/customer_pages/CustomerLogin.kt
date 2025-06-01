@@ -1,5 +1,6 @@
 package com.example.handyman.customer_pages
 
+import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -22,6 +23,8 @@ import androidx.navigation.NavController
 import com.google.firebase.database.*
 import com.example.handyman.R
 import com.example.handyman.utils.SessionManager
+import com.example.handyman.MainJobBoard
+
 
 @Composable
 fun CustomerLogin(modifier: Modifier = Modifier, navController: NavController) {
@@ -97,7 +100,10 @@ fun CustomerLogin(modifier: Modifier = Modifier, navController: NavController) {
                             if (authenticated) {
                                 SessionManager.saveLoggedInEmail(context, email)
                                 if (isVerified) {
-                                    navController.navigate("customerHome")
+                                    val intent = Intent(context, MainJobBoard::class.java).apply {
+                                        putExtra("user_type", "customer")
+                                    }
+                                    context.startActivity(intent)
                                 } else {
                                     navController.navigate("customerHomeUnverified")
                                 }
