@@ -1,4 +1,4 @@
-package com.example.handyman.account.components
+package com.example.handyman.components
 
 import android.content.Context
 import android.net.Uri

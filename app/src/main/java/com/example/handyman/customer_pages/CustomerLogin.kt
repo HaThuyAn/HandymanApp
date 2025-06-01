@@ -1,0 +1,135 @@
+package com.example.handyman.customer_pages
+
+import android.widget.Toast
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.google.firebase.database.*
+import com.example.handyman.R
+import com.example.handyman.utils.SessionManager
+
+@Composable
+fun CustomerLogin(modifier: Modifier = Modifier, navController: NavController) {
+    val context = LocalContext.current
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var passwordVisible by remember { mutableStateOf(false) }
+
+    val isValid = android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches() && password.length >= 8
+
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text("Log in", fontSize = 24.sp)
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Image(
+            painter = painterResource(id = R.drawable.character_customer),
+            contentDescription = "Customer Graphic",
+            modifier = Modifier.size(120.dp)
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        OutlinedTextField(
+            value = email,
+            onValueChange = { email = it },
+            label = { Text("Email") },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
+            singleLine = true
+        )
+
+        OutlinedTextField(
+            value = password,
+            onValueChange = { password = it },
+            label = { Text("Password") },
+            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            trailingIcon = {
+                Icon(
+                    painter = painterResource(id = if (passwordVisible) R.drawable.lets_icons_eye_duotone else R.drawable.heroicons_solid_eye_off),
+                    contentDescription = null,
+                    modifier = Modifier.clickable { passwordVisible = !passwordVisible }
+                )
+            },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            singleLine = true
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Button(
+            onClick = {
+                val userRef = FirebaseDatabase.getInstance().getReference("User")
+                val query = userRef.orderByChild("email").equalTo(email)
+                query.addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if (snapshot.exists()) {
+                            var authenticated = false
+                            var isVerified = false
+                            for (child in snapshot.children) {
+                                val userPass = child.child("password").getValue(String::class.java)
+                                val verified = child.child("verified").getValue(Boolean::class.java) == true
+                                if (userPass == password) {
+                                    authenticated = true
+                                    isVerified = verified
+                                    break
+                                }
+                            }
+                            if (authenticated) {
+                                SessionManager.saveLoggedInEmail(context, email)
+                                if (isVerified) {
+                                    navController.navigate("customerHome")
+                                } else {
+                                    navController.navigate("customerHomeUnverified")
+                                }
+                            } else {
+                                Toast.makeText(context, "Incorrect password", Toast.LENGTH_LONG).show()
+                            }
+                        } else {
+                            Toast.makeText(context, "User not found", Toast.LENGTH_LONG).show()
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Toast.makeText(context, "Login failed: ${error.message}", Toast.LENGTH_LONG).show()
+                    }
+                })
+            },
+            enabled = isValid,
+            colors = ButtonDefaults.buttonColors(containerColor = if (isValid) Color(0xFFFFB703) else Color.LightGray),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(54.dp)
+        ) {
+            Text("Login", fontSize = 18.sp)
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text("Don’t have an account?", fontSize = 14.sp)
+        Text(
+            text = "Sign Up",
+            color = Color(0xFF7D56F3),
+            modifier = Modifier.clickable { navController.navigate("customerSignup") }
+        )
+    }
+}
