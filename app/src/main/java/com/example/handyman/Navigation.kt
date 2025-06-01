@@ -10,6 +10,10 @@ import com.example.handyman.customer_pages.CustomerHome
 import com.example.handyman.customer_pages.CustomerLogin
 import com.example.handyman.customer_pages.CustomerSignup
 import com.example.handyman.customer_pages.CustomerHomeUnverified
+import com.example.handyman.customer_pages.CustomerKYCCodeOTP
+import com.example.handyman.customer_pages.CustomerKYCSubmitted
+import com.example.handyman.customer_pages.CustomerHomeKYCProcessing
+
 
 @Composable
 fun Navigation(modifier: Modifier = Modifier, startDestination: String = "landingPage") {
@@ -36,6 +40,15 @@ fun Navigation(modifier: Modifier = Modifier, startDestination: String = "landin
         }
         composable("customerHomeUnverified") {
             CustomerHomeUnverified(modifier, navController)
+        }
+        composable ("customerKycCodeOTP" ){
+            CustomerKYCCodeOTP(navController = navController)
+        }
+        composable("customerKycSubmitted") {
+            CustomerKYCSubmitted(navController = navController)
+        }
+        composable ("customerHomeKYCProcessing"){
+            CustomerHomeKYCProcessing(navController = navController)
         }
 
     })
