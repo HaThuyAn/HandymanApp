@@ -25,19 +25,6 @@ class ChooseAccountTypeActivity : ComponentActivity() {
                 navController = navController,
                 startDestination = "choose_account_type"
             ) {
-//                composable("choose_account_type") {
-//                    ChooseAccountType(navController)
-//                }
-//                composable("customerSignup") {
-//                    CustomerSignup(Modifier, navController)
-//                }
-//
-//                composable("handymanSignup") {
-//                    HandymanSignup(Modifier, navController)
-//                }
-
-
-
                 composable("choose_account_type") { ChooseAccountType(navController) }
                 composable("customerSignup") { CustomerSignup(Modifier, navController) }
                 composable("handymanSignup") { HandymanSignup(Modifier, navController) }
