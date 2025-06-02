@@ -114,6 +114,8 @@ fun CustomerLogin(modifier: Modifier = Modifier, navController: NavController) {
                                 if (isVerified) {
                                     val intent = Intent(context, MainJobBoard::class.java).apply {
                                         putExtra("user_type", "customer")
+                                        Log.d("Navigation", "CustomerLogin authenticated")
+                                        Log.d("Navigation", "user_type: customer")
                                     }
                                     context.startActivity(intent)
                                 } else {
