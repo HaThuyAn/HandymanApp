@@ -131,7 +131,7 @@ fun HandymanLogin(modifier: Modifier = Modifier,navController: NavController) {
                                 SessionManager.saveLoggedInEmail(context, email)
                                 if (isVerified) {
                                     val intent = Intent(context, MainJobBoard::class.java).apply {
-                                        putExtra("user_type", "customer")
+                                        putExtra("user_type", "handyman")
                                     }
                                     context.startActivity(intent)
                                 } else {
