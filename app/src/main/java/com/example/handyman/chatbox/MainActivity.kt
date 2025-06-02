@@ -1,7 +1,9 @@
 package com.example.handyman.chatbox
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import com.example.handyman.MainJobBoard
 import com.google.firebase.database.*
 import com.example.handyman.Navigation
 import com.example.handyman.ui.theme.HandymanTheme
@@ -70,6 +73,19 @@ class MainActivity : ComponentActivity() {
                     }
                 }
 
+                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                    startDestination?.let {
+                        Navigation(
+                            modifier = Modifier.padding(innerPadding),
+                            startDestination = it
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+
     private fun Login(email: String, password: String) {
         // Login function using credentials stored in Realtime Database
         val database = FirebaseDatabase.getInstance()
@@ -80,7 +96,10 @@ class MainActivity : ComponentActivity() {
         userRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 for (userSnapshot in snapshot.children) {
-                    if (email.trim() == userSnapshot.child("email").value && password.trim() == userSnapshot.child("password").value) {
+                    if (email.trim() == userSnapshot.child("email").value && password.trim() == userSnapshot.child(
+                            "password"
+                        ).value
+                    ) {
                         isLogined = true
                         SessionManager.currentUserID = userSnapshot.key
                         SessionManager.currentUserEmail = email.trim()
@@ -115,16 +134,25 @@ class MainActivity : ComponentActivity() {
                         isLogined = true
                         SessionManager.currentUserID = handymanSnapshot.key
                         SessionManager.currentUserEmail = email.trim()
-                        SessionManager.currentUserName = handymanSnapshot.child("firstName").value as String?
+                        SessionManager.currentUserName =
+                            handymanSnapshot.child("firstName").value as String?
                         SessionManager.currentUserType = "handyman"
                         val intent = Intent(this@MainActivity, MainJobBoard::class.java)
                         startActivity(intent)
                     }
                 }
                 if (!isLogined) {
-                    Toast.makeText(this@MainActivity, "Cannot find provided login information", Toast.LENGTH_LONG)
+                    Toast.makeText(
+                        this@MainActivity,
+                        "Cannot find provided login information",
+                        Toast.LENGTH_LONG
+                    )
                         .show()
-                    Toast.makeText(this@MainActivity, "Please recheck your email and password", Toast.LENGTH_LONG)
+                    Toast.makeText(
+                        this@MainActivity,
+                        "Please recheck your email and password",
+                        Toast.LENGTH_LONG
+                    )
                         .show()
                 }
             }
@@ -156,16 +184,6 @@ class MainActivity : ComponentActivity() {
 //                    Toast.makeText(this@MainActivity, "Failed to login as $email", Toast.LENGTH_LONG).show()
 //                }
 //            }
-=======
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    startDestination?.let {
-                        Navigation(
-                            modifier = Modifier.padding(innerPadding),
-                            startDestination = it
-                        )
-                    }
-                }
-            }
-        }
+
     }
 }
