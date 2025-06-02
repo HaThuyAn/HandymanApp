@@ -30,6 +30,8 @@ class ServiceCategoryFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "Total service categories: ${serviceCategoryViewModel.categories.size}")
+        Log.d("Navigation:", "ServiceCategoryFragment launched")
+
     }
 
     override fun onCreateView(
@@ -65,13 +67,17 @@ class ServiceCategoryFragment : Fragment() {
 
         val logoutIcon = view.findViewById<View>(R.id.ivLogout)
         logoutIcon.setOnClickListener {
+
             // Clear session
             SessionManager.clearSessionXML(requireContext())
+            Log.d("Navigation:", "User clicks Logout")
+
 
             // Redirect to ChooseAccountType activity
             val intent = Intent(requireContext(), ChooseAccountTypeActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
+
         }
 
         return view

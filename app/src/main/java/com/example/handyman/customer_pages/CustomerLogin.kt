@@ -1,6 +1,7 @@
 package com.example.handyman.customer_pages
 
 import android.content.Intent
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -34,6 +35,8 @@ fun CustomerLogin(modifier: Modifier = Modifier, navController: NavController) {
     var passwordVisible by remember { mutableStateOf(false) }
 
     val isValid = android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches() && password.length >= 8
+
+    Log.d("Navigation:", "CustomerLogin launches")
 
     Column(
         modifier = modifier

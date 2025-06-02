@@ -100,7 +100,6 @@ fun CustomerKYCSubmitted(navController: NavController) {
         ) {
             Text("Return Home", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Bold)
         }
-
         Spacer(modifier = Modifier.height(32.dp))
     }
 }

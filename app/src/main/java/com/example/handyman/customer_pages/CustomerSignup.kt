@@ -45,6 +45,8 @@ fun CustomerSignup(modifier: Modifier = Modifier, navController: NavController) 
             password.length >= 8 &&
             password == confirmPassword
 
+    Log.d("Navigation","CustomerSingup luanched")
+
     Column(
         modifier = modifier
             .fillMaxSize()

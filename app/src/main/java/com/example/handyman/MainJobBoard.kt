@@ -16,7 +16,6 @@ class MainJobBoard : AppCompatActivity() {
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment
         val navGraph = navHostFragment.navController.navInflater.inflate(R.navigation.nav_graph)
 
-
         // Navigations
         val startDestination = when(userType) {
             "customer" -> R.id.serviceCategoryFragment

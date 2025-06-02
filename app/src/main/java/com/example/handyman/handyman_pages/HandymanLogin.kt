@@ -21,6 +21,7 @@ import com.example.handyman.R
 import com.example.handyman.utils.SessionManager
 import com.google.firebase.database.*
 import android.content.Intent
+import android.util.Log
 import com.example.handyman.MainJobBoard
 
 
@@ -33,6 +34,8 @@ fun HandymanLogin(modifier: Modifier = Modifier,navController: NavController) {
     var passwordVisible by remember { mutableStateOf(false) }
 
     val isValid = android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches() && password.length >= 8
+
+    Log.d("Navigation:", "HandymanLogin launches")
 
     Column(
         modifier = Modifier

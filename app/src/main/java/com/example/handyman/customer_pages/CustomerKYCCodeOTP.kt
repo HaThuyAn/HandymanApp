@@ -99,7 +99,7 @@ fun CustomerKYCCodeOTP(navController: NavController) {
                 query.get().addOnSuccessListener { snapshot ->
                     for (child in snapshot.children) {
                         child.ref.child("isPhoneVerified").setValue(true)
-                        child.ref.child("kycStatus").setValue("submitted")
+                        child.ref.child("kycStatus").setValue("pending")
 //                        child.ref.child("verified").setValue(false) // explicitly mark as pending
 
                     }
