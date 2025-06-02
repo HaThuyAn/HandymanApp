@@ -6,19 +6,23 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.compose.ui.platform.InterceptPlatformTextInput
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.handyman.chatbox.ChatClientActivity
+import com.example.handyman.utils.SessionManager
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.firestore.FirebaseFirestore
 
 class QuotedHandymenAdapter(
     private val handymanList: List<String>,
@@ -48,7 +52,7 @@ class QuotedHandymenAdapter(
         val handymanId = handymanList[position]
         holder.tvTitle.text = handymanId
 
-        val isAssigned     = assignedId.isNotBlank()
+        val isAssigned = assignedId.isNotBlank()
         val isThisAssigned = (handymanId == assignedId)
 
         when {
@@ -60,6 +64,7 @@ class QuotedHandymenAdapter(
                     ColorStateList.valueOf(Color.parseColor("#50C878"))
                 )
             }
+
             isAssigned -> {
                 holder.assignBtn.text = "Assign"
                 holder.assignBtn.isEnabled = false
@@ -68,6 +73,7 @@ class QuotedHandymenAdapter(
                     ColorStateList.valueOf(Color.parseColor("#FFCCCCCC"))
                 )
             }
+
             else -> {
                 holder.assignBtn.text = "Assign"
                 holder.assignBtn.isEnabled = true
@@ -157,13 +163,44 @@ class QuotedHandymenAdapter(
         }
 
         holder.messageBtn.setOnClickListener {
-            // Hard-coded values for testing purpose
-            val intent = Intent(context, ChatClientActivity::class.java).apply {
-                putExtra("chatID", "8aFmUMySX7fBpFRoK7oz")
-                putExtra("uid", "handyman7")
-                putExtra("username", "Handyman7")
+            val chatRef = FirebaseFirestore.getInstance().collection("chats").document(jobId)
+            chatRef.get().addOnSuccessListener { documentSnapshot ->
+                if (documentSnapshot.exists()) {
+                    val memberInfos: List<Map<String, String>> =
+                        documentSnapshot.get("memberInfos") as List<Map<String, String>>
+                    for ((index, member) in memberInfos.withIndex()) {
+                        if (member["uid"] == SessionManager.currentUserID) {
+                            if (index == memberInfos.size - 1) {
+                                val intent = Intent(context, ChatClientActivity::class.java).apply {
+                                    putExtra("chatID", jobId)
+                                    putExtra("uid", memberInfos[0]["uid"])
+                                    putExtra("username", memberInfos[0]["username"])
+                                }
+                                context.startActivity(intent)
+                            } else {
+                                val intent = Intent(context, ChatClientActivity::class.java).apply {
+                                    putExtra("chatID", jobId)
+                                    putExtra("uid", memberInfos[1]["uid"])
+                                    putExtra("username", memberInfos[1]["username"])
+                                }
+                                context.startActivity(intent)
+                            }
+                        }
+                    }
+                } else {
+                    Log.e(
+                        "PrototypeIssue",
+                        "Due to limitations during developement of this prototype\n" +
+                                "The chatroom for this job is *not* automatically created on the Firestore\n" +
+                                "The chatroom must be manually added by creating a new document with id the same as this job id: $jobId \n" +
+                                "Add into the document a String field named 'chatID' whose value is the same as the document id\n" +
+                                "Then add user infos by including an array that contains two maps, each map containing a 'uid' key and a 'username' key\n" +
+                                "The 'uid' values must match the users that are part of the job (1 customer and 1 handyman)\n" +
+                                "The chat feature does not currently support more than two members per chatroom"
+                    )
+                    Toast.makeText(context, "Please read the log with tag 'PrototypeIssue'", Toast.LENGTH_LONG).show()
+                }
             }
-            context.startActivity(intent)
         }
     }
 }
