@@ -1,4 +1,4 @@
-package com.example.handyman.account.customers
+package com.example.handyman.customer_pages
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -14,12 +14,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.handyman.R
-import com.example.handyman.account.components.DividerLine
-import com.example.handyman.account.components.StepCircle
+import com.example.handyman.components.DividerLine
+import com.example.handyman.components.StepCircle
+import android.util.Log
+import androidx.compose.ui.platform.LocalContext
+import com.example.handyman.utils.SessionManager
+import com.google.firebase.database.FirebaseDatabase
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
-fun KYCAddressForm(navController: NavController) {
+fun CustomerKYCAddressForm(navController: NavController) {
+    val context = LocalContext.current
+
     val textFieldModifier = Modifier
         .fillMaxWidth()
         .height(56.dp)
@@ -193,7 +199,39 @@ fun KYCAddressForm(navController: NavController) {
 
         Button(
             onClick = {
-                navController.navigate("kycPhoneNumber")
+                val currentEmail = SessionManager.getLoggedInEmail(context)
+                val userRef = FirebaseDatabase.getInstance().getReference("User")
+                val query = userRef.orderByChild("email").equalTo(currentEmail)
+
+                val addressData = mapOf(
+                    "houseNumber" to houseNumber,
+                    "street" to street,
+                    "area" to area,
+                    "postCode" to postCode,
+                    "division" to division,
+                    "district" to district,
+                    "thana" to thana,
+                    "city" to city,
+                    "country" to country,
+                    "note" to note
+                )
+
+                query.get().addOnSuccessListener { snapshot ->
+                    for (child in snapshot.children) {
+                        child.ref.updateChildren(addressData)
+                            .addOnSuccessListener {
+                                navController.navigate("customerKycPhoneNumber")
+                            }
+                            .addOnFailureListener { error ->
+                                Log.e("KYC", "Failed to update address fields: ${error.message}")
+                            }
+                    }
+                    if (!snapshot.exists()) {
+                        Log.e("KYC", "No user found with email: $currentEmail")
+                    }
+                }.addOnFailureListener { error ->
+                    Log.e("KYC", "Failed to query user: ${error.message}")
+                }
             },
             enabled = isFormComplete,
             modifier = Modifier

@@ -1,4 +1,4 @@
-package com.example.handyman.account.customers
+package com.example.handyman.customer_pages
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -14,12 +14,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.handyman.R
-import com.example.handyman.account.components.DividerLine
-import com.example.handyman.account.components.StepCircle
+import com.example.handyman.components.DividerLine
+import com.example.handyman.components.StepCircle
+import android.util.Log
+import androidx.compose.ui.platform.LocalContext
+import com.example.handyman.utils.SessionManager
+import com.google.firebase.database.FirebaseDatabase
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun KYCPhoneNumber(navController: NavController) {
+fun CustomerKYCPhoneNumber(navController: NavController) {
+    val context = LocalContext.current
     var phoneNumber by remember { mutableStateOf("") }
     val textFieldModifier = Modifier
         .fillMaxWidth()
@@ -76,7 +80,7 @@ fun KYCPhoneNumber(navController: NavController) {
         OutlinedTextField(
             value = phoneNumber,
             onValueChange = { phoneNumber = it },
-            placeholder = { Text("+880 0000-000000") },
+            placeholder = { Text("+880 1300-000000") },
             modifier = textFieldModifier,
             isError = phoneNumber.isNotBlank() && !isValidPhone
         )
@@ -85,7 +89,26 @@ fun KYCPhoneNumber(navController: NavController) {
 
         Button(
             onClick = {
-                navController.navigate("kycCodeOTP")
+                val currentEmail = SessionManager.getLoggedInEmail(context)
+                val userRef = FirebaseDatabase.getInstance().getReference("User")
+                val query = userRef.orderByChild("email").equalTo(currentEmail)
+
+                query.get().addOnSuccessListener { snapshot ->
+                    for (child in snapshot.children) {
+                        child.ref.child("phoneNumber").setValue(phoneNumber)
+                            .addOnSuccessListener {
+                                navController.navigate("customerKycCodeOTP")
+                            }
+                            .addOnFailureListener { error ->
+                                Log.e("KYC", "Failed to save phone number: ${error.message}")
+                            }
+                    }
+                    if (!snapshot.exists()) {
+                        Log.e("KYC", "No user found with email: $currentEmail")
+                    }
+                }.addOnFailureListener { error ->
+                    Log.e("KYC", "Failed to query user: ${error.message}")
+                }
             },
             enabled = isValidPhone,
             modifier = Modifier

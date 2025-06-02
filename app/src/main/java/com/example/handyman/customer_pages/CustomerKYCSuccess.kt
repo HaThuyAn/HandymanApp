@@ -1,4 +1,4 @@
-package com.example.handyman.account.customers
+package com.example.handyman.customer_pages
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -20,7 +20,7 @@ import androidx.navigation.NavController
 import com.example.handyman.R
 
 @Composable
-fun KYCSuccess(navController: NavController) {
+fun CustomerKYCSuccess(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -71,7 +71,7 @@ fun KYCSuccess(navController: NavController) {
         Button(
             onClick = {
                 // TODO: Navigate to next screen or home
-                navController.navigate("home")
+                navController.navigate("customerHome")
             },
             modifier = Modifier
                 .fillMaxWidth()

@@ -14,11 +14,15 @@ import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.handyman.utils.SessionManager
 import com.google.firebase.database.FirebaseDatabase
 import java.util.UUID
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.example.handyman.MainJobBoard
+import com.example.handyman.ChooseAccountType
+import android.content.Intent
 
 class HandymanJobBoardFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
@@ -31,6 +35,17 @@ class HandymanJobBoardFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_handyman_job_board, container, false)
+
+        val logoutIcon = view.findViewById<View>(R.id.ivLogout)
+        logoutIcon.setOnClickListener {
+            // Clear session
+            SessionManager.clearSessionXML(requireContext())
+
+            // Redirect to ChooseAccountTypeActivity
+            val intent = Intent(requireContext(), ChooseAccountTypeActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+        }
 
         recyclerView = view.findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(context)

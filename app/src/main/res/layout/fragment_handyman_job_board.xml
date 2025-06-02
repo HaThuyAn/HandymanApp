@@ -81,6 +81,16 @@
                     android:textColor="@android:color/darker_gray" />
             </LinearLayout>
         </LinearLayout>
+
+        <ImageView
+            android:id="@+id/ivLogout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_logout"
+            android:contentDescription="Logout"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="16dp" />
+
     </LinearLayout>
 
     <!-- RecyclerView -->

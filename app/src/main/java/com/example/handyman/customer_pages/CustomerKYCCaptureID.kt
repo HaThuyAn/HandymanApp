@@ -1,4 +1,4 @@
-package dev.duck.accounts.customer_pages
+package com.example.handyman.customer_pages
 
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -28,11 +28,15 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.handyman.R
-import com.example.handyman.account.components.DividerLine
-import com.example.handyman.account.components.StepCircle
+import com.example.handyman.components.DividerLine
+import com.example.handyman.components.StepCircle
+import android.util.Log
+import androidx.compose.ui.platform.LocalContext
+import com.example.handyman.utils.SessionManager
+import com.google.firebase.database.FirebaseDatabase
 
 @Composable
-fun KYCCaptureID(navController: NavController, modifier: Modifier = Modifier) {
+fun CustomerKYCCaptureID(navController: NavController, modifier: Modifier = Modifier) {
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
 
     var showCamera by remember { mutableStateOf(false) }
@@ -172,17 +176,55 @@ fun KYCCaptureID(navController: NavController, modifier: Modifier = Modifier) {
             }
         }
         else{
-            // TODO - show Submit Button
-            // TODO - show try again (clickable text) button
 
             Spacer(modifier = Modifier.height(48.dp))
 
             Column{ // Upload Button
                 Button(
                     onClick = {
-                        navController.navigate("kycAddressForm")
+                        if (selectedImageUri != null) {
+                            val currentEmail = SessionManager.getLoggedInEmail(context)
+                            val userRef = FirebaseDatabase.getInstance().getReference("User")
+                            val query = userRef.orderByChild("email").equalTo(currentEmail)
 
-                    },
+                            // Step 1: Upload to Firebase Storage
+                            val storageRef = com.google.firebase.storage.FirebaseStorage.getInstance().reference
+                            val fileName = "photo_id_cards/${System.currentTimeMillis()}_${selectedImageUri!!.lastPathSegment}"
+                            val photoRef = storageRef.child(fileName)
+
+                            photoRef.putFile(selectedImageUri!!)
+                                .addOnSuccessListener {
+                                    photoRef.downloadUrl.addOnSuccessListener { uri ->
+                                        val downloadUrl = uri.toString()
+
+                                        // Step 2: Save URL to Realtime Database
+                                        query.get().addOnSuccessListener { snapshot ->
+                                            for (child in snapshot.children) {
+                                                child.ref.child("photoIdCard").setValue(downloadUrl)
+                                                    .addOnSuccessListener {
+                                                        navController.navigate("customerKycAddressForm")
+                                                    }
+                                                    .addOnFailureListener { e ->
+                                                        Log.e("KYC", "Failed to save photo URL: ${e.message}")
+                                                    }
+                                            }
+
+                                            if (!snapshot.exists()) {
+                                                Log.e("KYC", "No user found with email: $currentEmail")
+                                            }
+                                        }.addOnFailureListener { e ->
+                                            Log.e("KYC", "Failed to query user: ${e.message}")
+                                        }
+                                    }
+                                }
+                                .addOnFailureListener { e ->
+                                    Log.e("KYC", "Failed to upload image to Firebase Storage: ${e.message}")
+                                }
+                        } else {
+                            Log.e("KYC", "No image selected.")
+                        }
+                    }
+,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(56.dp),
