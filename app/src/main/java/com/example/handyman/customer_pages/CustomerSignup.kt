@@ -45,7 +45,7 @@ fun CustomerSignup(modifier: Modifier = Modifier, navController: NavController) 
             password.length >= 8 &&
             password == confirmPassword
 
-    Log.d("Navigation","CustomerSingup luanched")
+    Log.d("Navigation","CustomerSingup launched")
 
     Column(
         modifier = modifier
@@ -144,6 +144,23 @@ fun CustomerSignup(modifier: Modifier = Modifier, navController: NavController) 
                     "password" to password,
                     "isPhoneVerified" to false,
                     "verified" to false,
+                    "createdAt" to timestamp,
+                    "updatedAt" to timestamp,
+                    "isPhoneVerified" to false,
+                    "verified" to false,
+                    "photoIdCard" to "",
+                    "houseNumber" to "",
+                    "street" to "",
+                    "area" to "",
+                    "division" to "",
+                    "district" to "",
+                    "thana" to "",
+                    "city" to "",
+                    "country" to "",
+                    "postcode" to "",
+                    "notes" to "",
+                    "kycStatus" to "pending",
+                    "approvedBy" to "",
                     "createdAt" to timestamp,
                     "updatedAt" to timestamp
                 )
