@@ -87,12 +87,19 @@ class HandymanJobListDetailsFragment : Fragment() {
         btnMessage.setOnClickListener {
             val context = requireContext()
 
+            // Fetch document from Firestore that contains chatroom of job
             val chatRef = FirebaseFirestore.getInstance().collection("chats").document(jobId)
             chatRef.get().addOnSuccessListener { documentSnapshot ->
                 if (documentSnapshot.exists()) {
+                    // Load memberInfos array from document
                     val memberInfos: List<Map<String, String>> = documentSnapshot.get("memberInfos") as List<Map<String, String>>
+
+                    // Loop through all maps in memberInfos to check if this chatroom belongs to current user
                     for ((index, member) in memberInfos.withIndex()) {
                         if (member["uid"] == SessionManager.currentUserID) {
+                            // If current user is in the second (last) map of array
+                            // open ChatClientActivity with information of the other user
+                            // (whose information should be stored in first map of array)
                             if (index == memberInfos.size - 1) {
                                 val intent = Intent(context, ChatClientActivity::class.java).apply {
                                     putExtra("chatID", jobId)
@@ -102,6 +109,9 @@ class HandymanJobListDetailsFragment : Fragment() {
                                 context.startActivity(intent)
                             }
                             else {
+                                // Else if current user is in the first map of array
+                                // open ChatClientActivity with information of the other user
+                                // (whose information should be stored in second (last) map of array)
                                 val intent = Intent(context, ChatClientActivity::class.java).apply {
                                     putExtra("chatID", jobId)
                                     putExtra("uid", memberInfos[1]["uid"])
@@ -115,7 +125,7 @@ class HandymanJobListDetailsFragment : Fragment() {
                 else {
                     Log.e(
                         "PrototypeIssue",
-                        "Due to limitations during developement of this prototype\n" +
+                        "Due to limitations during development of this prototype\n" +
                                 "The chatroom for this job is *not* automatically created on the Firestore\n" +
                                 "The chatroom must be manually added by creating a new document with id the same as this job id: $jobId \n" +
                                 "Add into the document a String field named 'chatID' whose value is the same as the document id\n" +

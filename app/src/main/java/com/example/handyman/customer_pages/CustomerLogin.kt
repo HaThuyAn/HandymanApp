@@ -106,6 +106,8 @@ fun CustomerLogin(modifier: Modifier = Modifier, navController: NavController) {
                                 if (userPass == password) {
                                     authenticated = true
                                     isVerified = verified
+                                    SessionManager.currentUserID = child.key
+                                    SessionManager.currentUserName = child.child("firstName").getValue(String::class.java)
                                     break
                                 }
                             }
