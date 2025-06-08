@@ -21,6 +21,8 @@ import com.example.handyman.customer_pages.CustomerKYCPhoneNumber
 //Handyman pages
 import com.example.handyman.handyman_pages.HandymanSignup
 import com.example.handyman.handyman_pages.HandymanLogin
+import com.example.handyman.handyman_pages.HandymanHomeUnverified
+import com.example.handyman.handyman_pages.HandymanKYCLanding
 
 
 @Composable
@@ -37,12 +39,17 @@ fun Navigation(modifier: Modifier = Modifier, startDestination: String = "landin
 
 //        Handyman pages
 
-
         composable("handymanSignup") {
             HandymanSignup(modifier, navController)
         }
         composable("handymanLogin") {
             HandymanLogin(modifier, navController)
+        }
+        composable("handymanHomeUnverified") {
+            HandymanHomeUnverified(modifier, navController)
+        }
+        composable("handymanKYCLanding") {
+            HandymanKYCLanding(modifier, navController)
         }
 
 //        Customer pages
