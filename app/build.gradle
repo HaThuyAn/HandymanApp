@@ -105,4 +105,8 @@ dependencies {
     // added during migration
     implementation "androidx.navigation:navigation-compose:2.8.0"
 
+    // Fix firebase error
+
+    implementation("com.google.firebase:firebase-appcheck-debug:17.0.0")
+
 }
