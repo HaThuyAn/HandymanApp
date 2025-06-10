@@ -51,9 +51,9 @@ class CustomerJobListAdapter(
             tvJobDesc.text = item.jobDesc
             if (item.jobSalaryFrom.isNotBlank() && item.jobSalaryTo.isNotBlank()) {
                 tvSalary.text = if (item.jobPaymentOption == "Per Day")
-                    "AUD ${item.jobSalaryFrom}-${item.jobSalaryTo}/day"
+                    "BDT ${item.jobSalaryFrom}-${item.jobSalaryTo}/day"
                 else
-                    "AUD ${item.jobSalaryFrom}-${item.jobSalaryTo}"
+                    "BDT ${item.jobSalaryFrom}-${item.jobSalaryTo}"
             } else {
                 tvSalary.text = "To be negotiated"
             }

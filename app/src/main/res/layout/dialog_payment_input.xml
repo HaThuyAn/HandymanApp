@@ -21,7 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="numberDecimal"
-        android:hint="Amount in AUD"
+        android:hint="Amount in BDT"
         android:padding="12dp"
         android:background="@drawable/edit_text_background"
         android:textColor="@android:color/black"

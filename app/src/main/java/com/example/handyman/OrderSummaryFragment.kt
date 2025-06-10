@@ -46,9 +46,9 @@ class OrderSummaryFragment : Fragment() {
         val salaryDisplay = view.findViewById<TextView>(R.id.tvPrice)
         if (salaryFrom.isNotBlank() && salaryTo.isNotBlank()) {
             salaryDisplay.text = if (paymentOption == "Per Day")
-                "AUD $salaryFrom-$salaryTo/day"
+                "BDT $salaryFrom-$salaryTo/day"
             else
-                "AUD $salaryFrom-$salaryTo"
+                "BDT $salaryFrom-$salaryTo"
         } else {
             salaryDisplay.text = "To be negotiated"
         }

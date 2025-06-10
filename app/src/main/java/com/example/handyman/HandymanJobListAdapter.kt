@@ -50,9 +50,9 @@ class HandymanJobListAdapter(
             tvJobDesc.text = item.jobDesc
             if (item.jobSalaryFrom != "" && item.jobSalaryTo != "") {
                 if (item.jobPaymentOption == "Per Day") {
-                    tvSalary.text = "AUD ${item.jobSalaryFrom}-${item.jobSalaryTo}/day"
+                    tvSalary.text = "BDT ${item.jobSalaryFrom}-${item.jobSalaryTo}/day"
                 } else {
-                    tvSalary.text = "AUD ${item.jobSalaryFrom}-${item.jobSalaryTo}"
+                    tvSalary.text = "BDT ${item.jobSalaryFrom}-${item.jobSalaryTo}"
                 }
             } else {
                 tvSalary.text = "To be negotiated"
