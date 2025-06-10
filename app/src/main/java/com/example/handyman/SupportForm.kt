@@ -5,8 +5,7 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.database.FirebaseDatabase
 import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import java.util.*
 
 class SupportForm : AppCompatActivity() {
 
@@ -17,7 +16,13 @@ class SupportForm : AppCompatActivity() {
     private lateinit var spinnerCategory: Spinner
     private lateinit var btnSubmit: Button
 
-    private val categories = listOf("Technical Issue", "Billing & Payments", "Account Management", "Feature Request", "General Inquiry")
+    private val categories = listOf(
+        "Technical Issue",
+        "Billing & Payments",
+        "Account Management",
+        "Feature Request",
+        "General Inquiry"
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,7 +36,7 @@ class SupportForm : AppCompatActivity() {
         spinnerCategory = findViewById(R.id.spinnerCategory)
         btnSubmit = findViewById(R.id.btnSubmit)
 
-        // Set up Spinner items
+        // Set up Spinner
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categories)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerCategory.adapter = adapter
@@ -43,41 +48,39 @@ class SupportForm : AppCompatActivity() {
             val category = spinnerCategory.selectedItem?.toString() ?: ""
             val message = editMessage.text.toString().trim()
 
-            // Simple validation
-            if (name.isEmpty() || email.isEmpty() || subject.isEmpty() || message.isEmpty() || category.isEmpty()) {
-                Toast.makeText(this, "Please fill out all fields.", Toast.LENGTH_SHORT).show()
+            val error = FormValidator.validate(name, email, subject, message, category)
+            if (error != null) {
+                Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                Toast.makeText(this, "Please enter a valid email.", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            // Firebase setup with your Realtime DB URL
-            val database = FirebaseDatabase.getInstance("https://customerhandyman.firebaseio.com")
+            val database = FirebaseDatabase.getInstance("https://handymanapplicationcos40006-default-rtdb.firebaseio.com/")
             val supportRequestsRef = database.getReference("support_requests")
-            val newRequestRef = supportRequestsRef.push()
 
-            val currentTimestamp = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault()).format(Date())
+            val dateTimeId = SimpleDateFormat("yyyyMMdd-HHmmss", Locale.getDefault()).format(Date())
+            val id = "REQ-$dateTimeId"
 
-            val supportRequest = SupportRequest(
-                name = name,
-                email = email,
-                subject = subject,
-                message = message,
-                category = category,
-                status = "Open",
-                createdAt = currentTimestamp
+            val createdAt = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault()).format(Date())
+            val lastUpdatedAt = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault()).format(Date())
+
+            val supportRequest = mapOf(
+                "id" to id,
+                "email" to email,
+                "subject" to subject,
+                "message" to message,
+                "category" to category,
+                "status" to "Open",
+                "createdAt" to createdAt,
+                "lastUpdatedAt" to lastUpdatedAt
             )
 
-            newRequestRef.setValue(supportRequest)
+            supportRequestsRef.child(id).setValue(supportRequest)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        Toast.makeText(this, "Support request sent!", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this, "Support request submitted!", Toast.LENGTH_LONG).show()
                         clearForm()
                     } else {
-                        Toast.makeText(this, "Failed to send support request.", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this, "Failed to submit support request.", Toast.LENGTH_LONG).show()
                     }
                 }
         }
@@ -91,14 +94,3 @@ class SupportForm : AppCompatActivity() {
         spinnerCategory.setSelection(0)
     }
 }
-
-// SupportRequest data class same as Compose example
-data class SupportRequest(
-    val name: String = "",
-    val email: String = "",
-    val subject: String = "",
-    val message: String = "",
-    val category: String = "",
-    val status: String = "Open",
-    val createdAt: String = ""
-)

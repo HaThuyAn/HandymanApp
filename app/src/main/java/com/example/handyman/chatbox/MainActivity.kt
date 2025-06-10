@@ -64,7 +64,6 @@ class MainActivity : ComponentActivity() {
                     ) {
                         isLogined = true
                         SessionManager.currentUserID = userSnapshot.key
-                        SessionManager.currentUserEmail = email.trim()
                         SessionManager.currentUserName = userSnapshot.child("firstName").value as String?
                         SessionManager.currentUserType = "customer"
                         val intent = Intent(this@MainActivity, MainJobBoard::class.java)
@@ -95,7 +94,6 @@ class MainActivity : ComponentActivity() {
                     ) {
                         isLogined = true
                         SessionManager.currentUserID = handymanSnapshot.key
-                        SessionManager.currentUserEmail = email.trim()
                         SessionManager.currentUserName =
                             handymanSnapshot.child("firstName").value as String?
                         SessionManager.currentUserType = "handyman"
