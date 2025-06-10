@@ -60,9 +60,9 @@ class HandymanJobListDetailsFragment : Fragment() {
         val salaryDisplay = view.findViewById<TextView>(R.id.tvPrice)
         if (salaryFrom != "" && salaryTo != "") {
             if (paymentOption == "Per Day") {
-                salaryDisplay.text = "AUD $salaryFrom-$salaryTo/day"
+                salaryDisplay.text = "BDT $salaryFrom-$salaryTo/day"
             } else {
-                salaryDisplay.text = "AUD $salaryFrom-$salaryTo"
+                salaryDisplay.text = "BDT $salaryFrom-$salaryTo"
             }
         } else {
             salaryDisplay.text = "To be negotiated"

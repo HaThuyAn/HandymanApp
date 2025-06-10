@@ -45,7 +45,7 @@ class CustomerJobPaymentFragment : Fragment() {
 
                 jobTitleView.text = jobTitle
                 jobDescView.text = jobDesc
-                requestedAmountView.text = "Requested Amount: AUD $requestedAmount"
+                requestedAmountView.text = "Requested Amount: BDT $requestedAmount"
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -79,7 +79,7 @@ class CustomerJobPaymentFragment : Fragment() {
                         findNavController().navigate(action)
                     }
                 } else {
-                    Toast.makeText(context, "Amount must exactly match AUD $requestedAmount", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, "Amount must exactly match BDT $requestedAmount", Toast.LENGTH_LONG).show()
                 }
             }
             .setNegativeButton("Cancel", null)

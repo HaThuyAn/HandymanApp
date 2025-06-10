@@ -335,7 +335,7 @@ class HandymanJobListFragment : Fragment() {
 
                                 jobRef.child("handypay").setValue(enteredAmountStr)
                                     .addOnSuccessListener {
-                                        Toast.makeText(context, "Payment recorded: AUD $enteredAmountStr", Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(context, "Payment recorded: BDT $enteredAmountStr", Toast.LENGTH_SHORT).show()
                                     }
                                     .addOnFailureListener { e ->
                                         Toast.makeText(context, "Failed: ${e.message}", Toast.LENGTH_LONG).show()
@@ -345,7 +345,7 @@ class HandymanJobListFragment : Fragment() {
                             if (isOutOfRange) {
                                 AlertDialog.Builder(requireContext())
                                     .setTitle("Amount Outside Range")
-                                    .setMessage("This amount is outside the job's salary range of AUD ${from?.toInt()} - ${to?.toInt()}. Proceed anyway?")
+                                    .setMessage("This amount is outside the job's salary range of BDT ${from?.toInt()} - ${to?.toInt()}. Proceed anyway?")
                                     .setPositiveButton("Yes") { _, _ ->
                                         proceedWithUpdate()
                                     }
