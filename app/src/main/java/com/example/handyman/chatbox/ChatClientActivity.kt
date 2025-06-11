@@ -13,9 +13,6 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 
 class ChatClientActivity : ComponentActivity() {
-    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
-    private val database: FirebaseFirestore = FirebaseFirestore.getInstance()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -41,25 +38,26 @@ class ChatClientActivity : ComponentActivity() {
             }
         }
     }
+}
 
-    private fun sendMessage(chatID: String, receiverID: String, content: String = "") {
-        val message = hashMapOf(
+internal fun sendMessage(chatID: String, receiverID: String, content: String = "") {
+    val message = hashMapOf(
 //            "senderId" to auth.currentUser?.uid,
-            "senderId" to SessionManager.currentUserID,
-            "receiverId" to receiverID,
-            "timestamp" to FieldValue.serverTimestamp(),  // Use Firebase server time for more consistency
-            "content" to content
-        )
+        "senderId" to SessionManager.currentUserID,
+        "receiverId" to receiverID,
+        "timestamp" to FieldValue.serverTimestamp(),  // Use Firebase server time for more consistency
+        "content" to content
+    )
 
-        database.collection("chats")
-            .document(chatID)
-            .collection("messages")
-            .add(message)
-            .addOnSuccessListener { docRef ->
-                Log.d("Message", "Successfully sent message with ID: ${docRef.id}")
-            }
-            .addOnFailureListener { e ->
-                Log.e("Message", "Error sending message: ${e}")
-            }
-    }
+    val database = FirebaseFirestore.getInstance()
+    database.collection("chats")
+        .document(chatID)
+        .collection("messages")
+        .add(message)
+        .addOnSuccessListener { docRef ->
+            Log.d("Message", "Successfully sent message with ID: ${docRef.id}")
+        }
+        .addOnFailureListener { e ->
+            Log.e("Message", "Error sending message: ${e}")
+        }
 }
