@@ -24,8 +24,11 @@ import com.example.handyman.handyman_pages.HandymanLogin
 import com.example.handyman.handyman_pages.HandymanHomeUnverified
 import com.example.handyman.handyman_pages.HandymanKYCLanding
 import com.example.handyman.handyman_pages.HandymanKYCCaptureID
-
-
+import com.example.handyman.handyman_pages.HandymanKYCAddressForm
+import com.example.handyman.handyman_pages.HandymanKYCPhoneNumber
+import com.example.handyman.handyman_pages.HandymanKYCCodeOTP
+import com.example.handyman.handyman_pages.HandymanKYCSubmitted
+import com.example.handyman.handyman_pages.HandymanKYCProcessing
 
 @Composable
 fun Navigation(modifier: Modifier = Modifier, startDestination: String = "landingPage") {
@@ -56,6 +59,23 @@ fun Navigation(modifier: Modifier = Modifier, startDestination: String = "landin
         composable("handymanKYCCaptureID") {
             HandymanKYCCaptureID(modifier, navController)
         }
+        composable("handymanKYCAddressForm") {
+            HandymanKYCAddressForm(modifier, navController)
+        }
+        composable("handymanKycPhoneNumber") {
+            HandymanKYCPhoneNumber(modifier, navController)
+        }
+        composable("handymanKycCodeOTP") {
+            HandymanKYCCodeOTP(modifier, navController)
+        }
+        composable("handymanKycSubmitted") {
+            HandymanKYCSubmitted(modifier, navController)
+        }
+        composable("handymanHomeKYCProcessing") {
+            HandymanKYCProcessing(modifier, navController)
+        }
+
+
 
 //        Customer pages
 
