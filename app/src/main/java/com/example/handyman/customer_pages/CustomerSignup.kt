@@ -25,6 +25,8 @@ import com.google.firebase.database.FirebaseDatabase
 import com.example.handyman.R
 import java.util.*
 import java.text.SimpleDateFormat
+import com.example.handyman.utils.getCurrentYearMonth
+import com.example.handyman.utils.incrementMetric
 
 @Composable
 fun CustomerSignup(modifier: Modifier = Modifier, navController: NavController) {
@@ -168,6 +170,10 @@ fun CustomerSignup(modifier: Modifier = Modifier, navController: NavController) 
                 Log.d("Signup", "Attempting to create user: $userData")
                 userRef.setValue(userData)
                     .addOnSuccessListener {
+                        val (year, month) = getCurrentYearMonth()
+                        incrementMetric("serviceAnalytics/2025/$year/$month/newCustomers")
+                        incrementMetric("serviceAnalytics/2025/$year/$month/newUsers")
+
                         Log.d("Signup", "Successfully created user.")
                         Toast.makeText(context, "Account created successfully", Toast.LENGTH_LONG).show()
                         navController.navigate("customerLogin")
