@@ -45,8 +45,19 @@ class CustomerJobPaymentFragment : Fragment() {
 
                 jobTitleView.text = jobTitle
                 jobDescView.text = jobDesc
-                requestedAmountView.text = "Requested Amount: BDT $requestedAmount"
+
+                if (requestedAmount.isBlank()) {
+                    requestedAmountView.text = "Handyman has not set a requested amount yet."
+                    btnPayCash.isEnabled = false
+                    btnPayBkash.isEnabled = false
+                    Toast.makeText(context, "You cannot proceed until the handyman sets a requested amount.", Toast.LENGTH_LONG).show()
+                } else {
+                    requestedAmountView.text = "Requested Amount: BDT $requestedAmount"
+                    btnPayCash.isEnabled = true
+                    btnPayBkash.isEnabled = true
+                }
             }
+
 
             override fun onCancelled(error: DatabaseError) {
                 Toast.makeText(context, "Failed to load job data.", Toast.LENGTH_SHORT).show()
@@ -67,12 +78,18 @@ class CustomerJobPaymentFragment : Fragment() {
             .setPositiveButton("Pay") { _, _ ->
                 val enteredAmount = etAmount.text.toString().trim()
 
+                if (enteredAmount.isBlank()) {
+                    Toast.makeText(context, "Please enter a payment amount.", Toast.LENGTH_SHORT).show()
+                    return@setPositiveButton
+                }
+
                 if (enteredAmount == requestedAmount) {
                     val updates = mapOf(
                         "custpay" to enteredAmount,
                         "jobPaymentOption" to method,
                         "paymentStatus" to "done"
                     )
+
                     database.updateChildren(updates).addOnSuccessListener {
                         val action = CustomerJobPaymentFragmentDirections
                             .actionCustomerJobPaymentFragmentToPaymentSuccessFragment(args.customerId)
