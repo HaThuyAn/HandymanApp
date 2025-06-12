@@ -29,6 +29,8 @@ import com.example.handyman.handyman_pages.HandymanKYCPhoneNumber
 import com.example.handyman.handyman_pages.HandymanKYCCodeOTP
 import com.example.handyman.handyman_pages.HandymanKYCSubmitted
 import com.example.handyman.handyman_pages.HandymanKYCProcessing
+import com.example.handyman.handyman_pages.HandymanKYCCertificates
+
 
 @Composable
 fun Navigation(modifier: Modifier = Modifier, startDestination: String = "landingPage") {
@@ -74,7 +76,9 @@ fun Navigation(modifier: Modifier = Modifier, startDestination: String = "landin
         composable("handymanHomeKYCProcessing") {
             HandymanKYCProcessing(modifier, navController)
         }
-
+        composable("handymanKYCCertificates") {
+            HandymanKYCCertificates(modifier, navController)
+        }
 
 
 //        Customer pages

@@ -185,7 +185,7 @@ fun HandymanKYCCaptureID(modifier: Modifier = Modifier, navController: NavContro
                                             for (child in snapshot.children) {
                                                 child.ref.child("photoIdCard").setValue(downloadUrl)
                                                     .addOnSuccessListener {
-                                                        navController.navigate("handymanKYCAddressForm")
+                                                        navController.navigate("handymanKYCCertificates")
                                                     }
                                                     .addOnFailureListener { e ->
                                                         Log.e("KYC", "Failed to save photo URL: ${e.message}")

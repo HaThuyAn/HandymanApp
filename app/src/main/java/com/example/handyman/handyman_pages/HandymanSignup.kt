@@ -48,18 +48,26 @@ fun HandymanSignup(modifier: Modifier = Modifier,navController: NavController) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Icon(
-            painter = painterResource(id = R.drawable.arrow_back),
-            contentDescription = "Back",
+        Row (
             modifier = Modifier
-                .align(Alignment.Start)
-                .clickable { navController.popBackStack() }
-        )
+                .fillMaxWidth()
+                .height(56.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.arrow_back),
+                contentDescription = "Back",
+                modifier = Modifier
+                    .size(32.dp)
+                    .clickable { navController.popBackStack() }
+            )
 
-        Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
-        Text("Join our crew", fontSize = 24.sp, fontWeight = FontWeight.Bold)
-        Spacer(modifier = Modifier.height(16.dp))
+            Text("Join our crew", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.height(16.dp))
+        }
 
         Image(
             painter = painterResource(id = R.drawable.character_handyman),
