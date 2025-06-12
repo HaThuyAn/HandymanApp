@@ -44,17 +44,24 @@ fun HandymanLogin(modifier: Modifier = Modifier,navController: NavController) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Icon(
-            painter = painterResource(id = R.drawable.arrow_back),
-            contentDescription = "Back",
+
+        Row(
             modifier = Modifier
-                .align(Alignment.Start)
-                .clickable { navController.popBackStack() }
-        )
+            .fillMaxWidth()
+            .height(56.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically) {
 
-        Spacer(modifier = Modifier.height(12.dp))
-        Text("Log In", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+            Icon(
+                painter = painterResource(id = R.drawable.arrow_back),
+                contentDescription = "Back",
+                modifier = Modifier
+                    .size(32.dp)
+                    .clickable { navController.popBackStack() }
+            )
 
+            Text("Log In", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+        }
         Spacer(modifier = Modifier.height(16.dp))
 
         Image(
