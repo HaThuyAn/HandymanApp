@@ -59,14 +59,22 @@ class CustomerJobDetailsFragment : Fragment() {
         val jobTitle = view.findViewById<TextView>(R.id.tvJobTitle)
         jobTitle.text = serviceName
         val salaryDisplay = view.findViewById<TextView>(R.id.tvPrice)
-        if (salaryFrom != "" && salaryTo != "") {
-            if (paymentOption == "Per Day") {
-                salaryDisplay.text = "BDT $salaryFrom-$salaryTo/day"
+        val jobRef = FirebaseDatabase.getInstance().getReference("DummyJob").child(jobId)
+
+        jobRef.get().addOnSuccessListener { snapshot ->
+            val paymentStatus = snapshot.child("paymentStatus").getValue(String::class.java) ?: ""
+            val custpay = snapshot.child("custpay").getValue(String::class.java) ?: ""
+
+            if (paymentStatus == "done" && custpay.isNotBlank()) {
+                salaryDisplay.text = "Paid: BDT $custpay"
+            } else if (salaryFrom.isNotBlank() && salaryTo.isNotBlank()) {
+                salaryDisplay.text = if (paymentOption == "Per Day")
+                    "BDT $salaryFrom-$salaryTo/day"
+                else
+                    "BDT $salaryFrom-$salaryTo"
             } else {
-                salaryDisplay.text = "BDT $salaryFrom-$salaryTo"
+                salaryDisplay.text = "To be negotiated"
             }
-        } else {
-            salaryDisplay.text = "To be negotiated"
         }
         val jobDescDisplay = view.findViewById<TextView>(R.id.tvJobSubtitle)
         jobDescDisplay.text = jobDescription

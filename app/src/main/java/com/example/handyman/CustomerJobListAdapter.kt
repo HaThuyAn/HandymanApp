@@ -49,7 +49,9 @@ class CustomerJobListAdapter(
             // Bind your Job data to the views
             tvJobTitle.text = item.jobCat
             tvJobDesc.text = item.jobDesc
-            if (item.jobSalaryFrom.isNotBlank() && item.jobSalaryTo.isNotBlank()) {
+            if (item.paymentStatus == "done" && !item.custpay.isNullOrBlank()) {
+                tvSalary.text = "Paid: BDT ${item.custpay}"
+            } else if (item.jobSalaryFrom.isNotBlank() && item.jobSalaryTo.isNotBlank()) {
                 tvSalary.text = if (item.jobPaymentOption == "Per Day")
                     "BDT ${item.jobSalaryFrom}-${item.jobSalaryTo}/day"
                 else

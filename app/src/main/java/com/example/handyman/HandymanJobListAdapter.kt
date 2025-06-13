@@ -48,7 +48,9 @@ class HandymanJobListAdapter(
             // Bind your Job data to the views
             tvJobTitle.text = item.jobCat
             tvJobDesc.text = item.jobDesc
-            if (item.jobSalaryFrom != "" && item.jobSalaryTo != "") {
+            if (item.paymentStatus == "done" && !item.custpay.isNullOrBlank()) {
+                tvSalary.text = "Paid: BDT ${item.custpay}"
+            } else if (item.jobSalaryFrom.isNotBlank() && item.jobSalaryTo.isNotBlank()) {
                 if (item.jobPaymentOption == "Per Day") {
                     tvSalary.text = "BDT ${item.jobSalaryFrom}-${item.jobSalaryTo}/day"
                 } else {
