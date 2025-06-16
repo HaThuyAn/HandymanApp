@@ -99,13 +99,13 @@ fun CustomerLogin(modifier: Modifier = Modifier, navController: NavController) {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         if (snapshot.exists()) {
                             var authenticated = false
-                            var isVerified = false
+                            var isVerified = ""
                             for (child in snapshot.children) {
                                 val userPass = child.child("password").getValue(String::class.java)
-                                val verified = child.child("verified").getValue(Boolean::class.java) == true
+                                val verified = child.child("status").getValue(String::class.java)
                                 if (userPass == password) {
                                     authenticated = true
-                                    isVerified = verified
+                                    isVerified = verified.toString()
                                     SessionManager.currentUserID = child.key
                                     SessionManager.currentUserName = child.child("firstName").getValue(String::class.java)
                                     break
@@ -113,7 +113,7 @@ fun CustomerLogin(modifier: Modifier = Modifier, navController: NavController) {
                             }
                             if (authenticated) {
                                 SessionManager.saveLoggedInEmail(context, email)
-                                if (isVerified) {
+                                if(isVerified == "Verified"){
                                     val intent = Intent(context, MainJobBoard::class.java).apply {
                                         putExtra("user_type", "customer")
                                         Log.d("Navigation", "CustomerLogin authenticated")

@@ -160,7 +160,6 @@ fun HandymanSignup(modifier: Modifier = Modifier,navController: NavController) {
                     "email" to email,
                     "password" to password,
                     "isPhoneVerified" to false,
-                    "verified" to false,
                     "photoIdCard" to "",
                     "certificates" to "",
                     "houseNumber" to "",
@@ -173,7 +172,7 @@ fun HandymanSignup(modifier: Modifier = Modifier,navController: NavController) {
                     "country" to "",
                     "postcode" to "",
                     "notes" to "",
-                    "kycStatus" to "pending",
+                    "status" to "Pending",
                     "approvedBy" to "",
                     "createdAt" to timestamp,
                     "updatedAt" to timestamp
