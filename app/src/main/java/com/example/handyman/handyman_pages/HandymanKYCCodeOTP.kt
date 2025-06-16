@@ -105,7 +105,6 @@ fun HandymanKYCCodeOTP(modifier: Modifier = Modifier,navController: NavControlle
                     for (child in snapshot.children) {
                         child.ref.child("isPhoneVerified").setValue(true)
                         child.ref.child("kycStatus").setValue("Pending")
-                        // child.ref.child("verified").setValue(false) // optional
                     }
                     navController.navigate("handymanKycSubmitted")
                 }.addOnFailureListener { error ->
