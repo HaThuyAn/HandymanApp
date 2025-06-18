@@ -18,6 +18,8 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import androidx.navigation.fragment.navArgs
 import java.time.LocalDateTime
+import com.example.handyman.utils.getCurrentYearMonth
+import com.example.handyman.utils.incrementMetric
 
 class CustomerJobListFragment : Fragment() {
     private var currentCategoryKey = "allJobs"
@@ -306,6 +308,10 @@ class CustomerJobListFragment : Fragment() {
                                                     .setValue(newStatus)
                                                     .addOnSuccessListener {
                                                         if (newStatus == "Done") {
+                                                            //Increment "completedJobs" metric
+                                                            val (yearStr, monthStr) = getCurrentYearMonth()
+                                                            incrementMetric("serviceAnalytics/2025/$yearStr/$monthStr/jobsCompleted")
+
                                                             val finishedAt = LocalDateTime.now().toString()
                                                             jobRef.child("finishedBy").setValue(finishedAt)
                                                         }

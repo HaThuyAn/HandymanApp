@@ -1,5 +1,7 @@
 package com.example.handyman.chatbox
 
+
+
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -21,14 +23,27 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import androidx.compose.foundation.layout.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import java.util.Calendar
+import java.util.Locale
+import com.example.handyman.utils.updateSessionMetrics
+import com.example.handyman.utils.getCurrentYearMonth
 
 //import com.google.firebase.messaging.FirebaseMessaging
 
 class MainActivity : ComponentActivity() {
+    private lateinit var auth: FirebaseAuth
+    private lateinit var database: FirebaseDatabase
+    private var sessionStartTime: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val sessionEmail = SessionManager.getLoggedInEmail(this)
+
         Log.d("Session", "Restoring session for: $sessionEmail")
 
         setContent {
@@ -47,6 +62,23 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+
+    override fun onStart() {
+        super.onStart()
+        sessionStartTime = System.currentTimeMillis()
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        val user = FirebaseAuth.getInstance().currentUser ?: return
+        val sessionEnd = System.currentTimeMillis()
+        val durationMin = (sessionEnd - sessionStartTime) / 60000.0
+        val isBounce = durationMin < 1.0
+
+        val (year, month) = getCurrentYearMonth()
+        updateSessionMetrics(durationMin, isBounce, year, month)
+    }
 
     private fun Login(email: String, password: String) {
         // Login function using credentials stored in Realtime Database
