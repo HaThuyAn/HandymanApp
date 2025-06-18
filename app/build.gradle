@@ -23,12 +23,24 @@ android {
         }
     }
 
+    signingConfigs {
+        release {
+            storeFile file("handyman-keystore.jks")
+            storePassword "handyman123"
+            keyAlias "handyman-key"
+            keyPassword "handyman123"
+        }
+    }
+
     buildTypes {
         release {
+            signingConfig signingConfigs.release
             minifyEnabled false
+            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
